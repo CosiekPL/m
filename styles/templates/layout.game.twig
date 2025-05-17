@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>{{ game_name }}{% if title %} - {{ title }}{% endif %}</title>
+    
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles/resource/css/game/main.css?v={{ REV }}">
+    <link rel="stylesheet" href="styles/resource/css/game/{{ bodyclass }}.css?v={{ REV }}">
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/base/jquery.js"></script>
+    <script src="scripts/game/main.js?v={{ REV }}"></script>
+    
+    {% for scriptName in scripts %}
+    <script src="scripts/{{ scriptName }}.js?v={{ REV }}"></script>
+    {% endfor %}
+    
+    <script>
+        var serverTime = new Date({{ date[0] }}, {{ date[1] - 1 }}, {{ date[2] }}, {{ date[3] }}, {{ date[4] }}, {{ date[5] }});
+        var Ready = "{{ LNG.ready }}";
+        var Skin = "{{ dpath }}";
+        var Lang = "{{ lang }}";
+        var currentPage = "{{ page }}";
+        var head_info = "{{ LNG.fcm_info }}";
+    </script>
+</head>
+<body class="game-body {{ bodyclass }}">
+    <div class="wrapper">
+        <header>
+            <div class="container-fluid">
+                <div class="row header-row">
+                    <div class="col-md-2 text-center">
+                        <div class="logo">
+                            <a href="game.php?page=overview">
+                                <img src="styles/resource/images/game/logo.png" alt="{{ game_name }}" class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="resource-bar">
+                            <div class="row">
+                                <div class="col resource-item" id="metal_box">
+                                    <div class="resource-icon">
+                                        <img src="styles/resource/images/game/resources/metal.png" alt="{{ LNG.tech.901 }}">
+                                    </div>
+                                    <div class="resource-value" id="current_metal">{{ metal|number_format }}</div>
+                                    <div class="resource-storage">
+                                        <div class="progress">
+                                            {% set metalPercent = (metal / metal_max) * 100 %}
+                                            <div class="progress-bar {{ metalPercent > 80 ? 'bg-danger' : 'bg-success' }}" style="width: {{ metalPercent }}%"></div>
+                                        </div>
+                                        <span class="resource-max">{{ metal_max|number_format }}</span>
+                                    </div>
+                                    <div class="resource-production" id="metal_production">{{ metal_production|number_format }}</div>
+                                </div>
+                                
+                                <div class="col resource-item" id="crystal_box">
+                                    <div class="resource-icon">
+                                        <img src="styles/resource/images/game/resources/crystal.png" alt="{{ LNG.tech.902 }}">
+                                    </div>
+                                    <div class="resource-value" id="current_crystal">{{ crystal|number_format }}</div>
+                                    <div class="resource-storage">
+                                        <div class="progress">
+                                            {% set crystalPercent = (crystal / crystal_max) * 100 %}
+                                            <div class="progress-bar {{ crystalPercent > 80 ? 'bg-danger' : 'bg-success' }}" style="width: {{ crystalPercent }}%"></div>
+                                        </div>
+                                        <span class="resource-max">{{ crystal_max|number_format }}</span>
+                                    </div>
+                                    <div class="resource-production" id="crystal_production">{{ crystal_production|number_format }}</div>
+                                </div>
+                                
+                                <div class="col resource-item" id="deuterium_box">
+                                    <div class="resource-icon">
+                                        <img src="styles/resource/images/game/resources/deuterium.png" alt="{{ LNG.tech.903 }}">
+                                    </div>
+                                    <div class="resource-value" id="current_deuterium">{{ deuterium|number_format }}</div>
+                                    <div class="resource-storage">
+                                        <div class="progress">
+                                            {% set deuteriumPercent = (deuterium / deuterium_max) * 100 %}
+                                            <div class="progress-bar {{ deuteriumPercent > 80 ? 'bg-danger' : 'bg-success' }}" style="width: {{ deuteriumPercent }}%"></div>
+                                        </div>
+                                        <span class="resource-max">{{ deuterium_max|number_format }}</span>
+                                    </div>
+                                    <div class="resource-production" id="deuterium_production">{{ deuterium_production|number_format }}</div>
+                                </div>
+                                
+                                <div class="col resource-item" id="energy_box">
+                                    <div class="resource-icon">
+                                        <img src="styles/resource/images/game/resources/energy.png" alt="{{ LNG.tech.911 }}">
+                                    </div>
+                                    <div class="resource-value {{ energy_total < 0 ? 'text-danger' : '' }}" id="current_energy">{{ energy_total|number_format }}</div>
+                                    <div class="resource-storage">
+                                        <div class="text-center">{{ LNG.sys_production }} / {{ LNG.sys_usage }}</div>
+                                    </div>
+                                    <div class="resource-production">{{ energy_max|number_format }} / {{ energy_used|number_format }}</div>
+                                </div>
+                                
+                                <div class="col resource-item" id="darkmatter_box">
+                                    <div class="resource-icon">
+                                        <img src="styles/resource/images/game/resources/darkmatter.png" alt="{{ LNG.tech.921 }}">
+                                    </div>
+                                    <div class="resource-value" id="current_darkmatter">{{ darkmatter|number_format }}</div>
+                                    <div class="resource-storage">
+                                        <button class="btn btn-sm btn-outline-primary w-100" onclick="window.location.href='game.php?page=shop'">
+                                            {{ LNG.ls_store }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <nav class="main-nav">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="planet-selector">
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    {{ current_planet.name }} [{{ current_planet.galaxy }}:{{ current_planet.system }}:{{ current_planet.planet }}]
+                                </button>
+                                <div class="dropdown-menu">
+                                    {% for planetId, planetData in available_planets %}
+                                    <a class="dropdown-item {{ planetId == current_planet.id ? 'active' : '' }}" href="game.php?page={{ page }}&cp={{ planetId }}">
+                                        {{ planetData.name }} [{{ planetData.galaxy }}:{{ planetData.system }}:{{ planetData.planet }}]
+                                        {% if planetData.moon %}
+                                        <span class="float-end">
+                                            <i class="bi bi-moon-stars" title="{{ planetData.moon.name }}"></i>
+                                        </span>
+                                        {% endif %}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="main-menu">
+                            <ul class="nav">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'overview' ? 'active' : '' }}" href="game.php?page=overview">
+                                        <i class="bi bi-house-door"></i> {{ LNG.lm_overview }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'empire' ? 'active' : '' }}" href="game.php?page=empire">
+                                        <i class="bi bi-globe"></i> {{ LNG.lm_empire }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'buildings' ? 'active' : '' }}" href="game.php?page=buildings">
+                                        <i class="bi bi-building"></i> {{ LNG.lm_buildings }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'resources' ? 'active' : '' }}" href="game.php?page=resources">
+                                        <i class="bi bi-minecart-loaded"></i> {{ LNG.lm_resources }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'trader' ? 'active' : '' }}" href="game.php?page=trader">
+                                        <i class="bi bi-cart"></i> {{ LNG.lm_trader }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'research' ? 'active' : '' }}" href="game.php?page=research">
+                                        <i class="bi bi-lightbulb"></i> {{ LNG.lm_research }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'shipyard' ? 'active' : '' }}" href="game.php?page=shipyard">
+                                        <i class="bi bi-rocket"></i> {{ LNG.lm_shipyard }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'fleet' ? 'active' : '' }}" href="game.php?page=fleet">
+                                        <i class="bi bi-send"></i> {{ LNG.lm_fleet }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'technology' ? 'active' : '' }}" href="game.php?page=technology">
+                                        <i class="bi bi-diagram-3"></i> {{ LNG.lm_technology }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'galaxy' ? 'active' : '' }}" href="game.php?page=galaxy">
+                                        <i class="bi bi-stars"></i> {{ LNG.lm_galaxy }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ page == 'alliance' ? 'active' : '' }}" href="game.php?page=alliance">
+                                        <i class="bi bi-people"></i> {{ LNG.lm_alliance }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <main class="content">
+            <div class="container-fluid">
+                {% if message %}
+                <div class="alert alert-{{ message_type|default('info') }} alert-dismissible fade show">
+                    {{ message|raw }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+                
+                <div class="page-header">
+                    <h2>{{ page_title|default(LNG['page_title'][page]|default('')) }}</h2>
+                </div>
+                
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        
+        <footer>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>
+                            &copy; {{ game_name }} {{ "now"|date("Y") }} &bull;
+                            {{ LNG.Footer_stats|format(stats.users, stats.active_users) }}
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="game.php?page=disclamer">{{ LNG.menu_disclamer }}</a> &bull;
+                        <a href="game.php?page=rules">{{ LNG.menu_rules }}</a> &bull;
+                        <a href="game.php?page=support">{{ LNG.support }}</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- JavaScript for resource updates -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var resources = {
+            metal: {{ metal }},
+            crystal: {{ crystal }},
+            deuterium: {{ deuterium }},
+            metal_max: {{ metal_max }},
+            crystal_max: {{ crystal_max }},
+            deuterium_max: {{ deuterium_max }},
+            energy: {{ energy_total }},
+            metal_production: {{ metal_production_hour }},
+            crystal_production: {{ crystal_production_hour }},
+            deuterium_production: {{ deuterium_production_hour }}
+        };
+        
+        function updateResources() {
+            // Calculate elapsed seconds since page load
+            var now = new Date();
+            var elapsedSeconds = (now - window.pageLoadTime) / 1000;
+            
+            // Update resource values
+            var newMetal = resources.metal + (resources.metal_production / 3600) * elapsedSeconds;
+            var newCrystal = resources.crystal + (resources.crystal_production / 3600) * elapsedSeconds;
+            var newDeuterium = resources.deuterium + (resources.deuterium_production / 3600) * elapsedSeconds;
+            
+            // Cap resources at max storage
+            newMetal = Math.min(newMetal, resources.metal_max);
+            newCrystal = Math.min(newCrystal, resources.crystal_max);
+            newDeuterium = Math.min(newDeuterium, resources.deuterium_max);
+            
+            // Update display
+            document.getElementById('current_metal').textContent = Math.floor(newMetal).toLocaleString();
+            document.getElementById('current_crystal').textContent = Math.floor(newCrystal).toLocaleString();
+            document.getElementById('current_deuterium').textContent = Math.floor(newDeuterium).toLocaleString();
+            
+            // Update progress bars
+            var metalBar = document.querySelector('#metal_box .progress-bar');
+            var crystalBar = document.querySelector('#crystal_box .progress-bar');
+            var deuteriumBar = document.querySelector('#deuterium_box .progress-bar');
+            
+            var metalPercent = (newMetal / resources.metal_max) * 100;
+            var crystalPercent = (newCrystal / resources.crystal_max) * 100;
+            var deuteriumPercent = (newDeuterium / resources.deuterium_max) * 100;
+            
+            metalBar.style.width = metalPercent + '%';
+            crystalBar.style.width = crystalPercent + '%';
+            deuteriumBar.style.width = deuteriumPercent + '%';
+            
+            // Change color if storage is getting full
+            metalBar.className = 'progress-bar ' + (metalPercent > 80 ? 'bg-danger' : 'bg-success');
+            crystalBar.className = 'progress-bar ' + (crystalPercent > 80 ? 'bg-danger' : 'bg-success');
+            deuteriumBar.className = 'progress-bar ' + (deuteriumPercent > 80 ? 'bg-danger' : 'bg-success');
+        }
+        
+        // Store page load time
+        window.pageLoadTime = new Date();
+        
+        // Update resources every second
+        setInterval(updateResources, 1000);
+    });
+    </script>
+    
+    {% if execscript %}
+    <script>
+    {{ execscript|raw }}
+    </script>
+    {% endif %}
+</body>
+</html>

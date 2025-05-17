@@ -1,0 +1,190 @@
+{% extends "layout.universe.twig" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{{ LNG.register_title }}</h4>
+            </div>
+            <div class="card-body">
+                {% if errors %}
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                <form id="registerForm" method="post">
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h5>{{ LNG.register_account_info }}</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">{{ LNG.register_username }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" id="username" name="username" class="form-control" value="{{ username }}" required>
+                            </div>
+                            <small class="text-muted">{{ LNG.register_username_desc }}</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">{{ LNG.register_email }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" id="email" name="email" class="form-control" value="{{ email }}" required>
+                            </div>
+                            <small class="text-muted">{{ LNG.register_email_desc }}</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">{{ LNG.register_password }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" id="password" name="password" class="form-control" required>
+                            </div>
+                            <small class="text-muted">{{ LNG.register_password_desc }}</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="password2" class="form-label">{{ LNG.register_password_repeat }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" id="password2" name="password2" class="form-control" required>
+                            </div>
+                            <small class="text-muted">{{ LNG.register_password_repeat_desc }}</small>
+                        </div>
+                        
+                        {% if referralEnabled %}
+                        <div class="col-md-6 mb-3">
+                            <label for="referralID" class="form-label">{{ LNG.register_referral }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-plus"></i></span>
+                                <input type="text" id="referralID" name="referralID" class="form-control" value="{{ referralID }}">
+                            </div>
+                            <small class="text-muted">{{ LNG.register_referral_desc }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h5>{{ LNG.register_universe_selection }}</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="universe" class="form-label">{{ LNG.register_universe }}</label>
+                            <select id="universe" name="universe" class="form-select">
+                                {% for universeID, universeName in universeSelect %}
+                                <option value="{{ universeID }}" {% if universeID == universe %}selected{% endif %}>{{ universeName }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">{{ LNG.register_universe_desc }}</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="language" class="form-label">{{ LNG.register_language }}</label>
+                            <select id="language" name="language" class="form-select">
+                                {% for langKey, langName in languages %}
+                                <option value="{{ langKey }}" {% if langKey == language %}selected{% endif %}>{{ langName }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">{{ LNG.register_language_desc }}</small>
+                        </div>
+                    </div>
+                    
+                    {% if useCaptcha %}
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h5>{{ LNG.register_verification }}</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="captchaInput" class="form-label">{{ LNG.register_captcha }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
+                                <input type="text" id="captchaInput" name="captchaInput" class="form-control" required>
+                            </div>
+                            <small class="text-muted">{{ LNG.register_captcha_desc }}</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="mt-4">
+                                <img src="index.php?page=captcha" alt="Captcha" id="captchaImg" class="img-fluid">
+                                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" id="refreshCaptcha">
+                                    <i class="bi bi-arrow-clockwise"></i> {{ LNG.register_refresh_captcha }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="agreeTerms" name="agreeTerms" required>
+                                <label class="form-check-label" for="agreeTerms">
+                                    {{ LNG.register_accept_terms|raw }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" name="submit" class="btn btn-primary btn-lg">{{ LNG.register_submit }}</button>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="index.php" class="btn btn-outline-secondary">{{ LNG.register_back_to_login }}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if gameRules %}
+<div class="row mt-4">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">{{ LNG.register_rules_title }}</h5>
+            </div>
+            <div class="card-body">
+                {{ gameRules|raw }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if useCaptcha %}
+    document.getElementById('refreshCaptcha').addEventListener('click', function() {
+        var captchaImg = document.getElementById('captchaImg');
+        captchaImg.src = 'index.php?page=captcha&' + Math.random();
+    });
+    {% endif %}
+    
+    // Form validation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        var password = document.getElementById('password').value;
+        var password2 = document.getElementById('password2').value;
+        
+        if (password !== password2) {
+            e.preventDefault();
+            alert("{{ LNG.register_password_mismatch }}");
+        }
+    });
+});
+</script>
+{% endblock %}

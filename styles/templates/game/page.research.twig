@@ -1,0 +1,105 @@
+{% extends 'game_layout.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ LNG.lm_research }}</h5>
+                    {% if Queue is not empty %}
+                    <span class="badge bg-info">{{ LNG.bd_researching }} {{ Queue|length }}/{{ MAX_RESEARCH_QUEUE_SIZE }}</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if Queue is not empty %}
+                    <div class="mb-4">
+                        <h6>{{ LNG.bd_research_queue }}</h6>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>{{ LNG.bd_research }}</th>
+                                    <th>{{ LNG.bd_remaining }}</th>
+                                    <th>{{ LNG.bd_from_level }} {{ LNG.bd_to_level }}</th>
+                                    <th>{{ LNG.bd_action }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for Item in Queue %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ dpath }}forschung/{{ Item.element }}.gif" width="40" class="me-2">
+                                            {{ Item.name }}
+                                        </div>
+                                    </td>
+                                    <td><span class="researchTime">{{ Item.resttime }}</span></td>
+                                    <td>{{ Item.level }} {{ LNG.bd_to_level }} {{ Item.levelToBuild }}</td>
+                                    <td>
+                                        {% if Queue|length > 1 and loop.index0 > 0 %}
+                                        <a href="game.php?page=research&amp;cmd=remove&amp;listid={{ loop.index0 }}" class="btn btn-danger btn-sm">{{ LNG.bd_cancel }}</a>
+                                        {% elseif loop.index0 == 0 %}
+                                        <a href="game.php?page=research&amp;cmd=cancel" class="btn btn-danger btn-sm">{{ LNG.bd_cancel }}</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        {% for ID, Element in ResearchList %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 {% if Element.elementSkip %}bg-light{% endif %}">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <img src="{{ dpath }}forschung/{{ ID }}.gif" alt="{{ Element.name }}" class="img-fluid mb-2" style="max-width: 100px;">
+                                            <div class="small">{{ LNG.bd_level }}: {{ Element.level }}{% if Element.maxLevel %}/{{ Element.maxLevel }}{% endif %}</div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h5>{{ Element.name }}</h5>
+                                            <p class="small">{{ Element.description }}</p>
+                                            
+                                            {% if Element.costResources is not empty %}
+                                            <div class="resources small mb-2">
+                                                {% for ResourceID, ResourceAmount in Element.costResources %}
+                                                <div class="{% if ResourceAmount.available %}text-success{% else %}text-danger{% endif %}">
+                                                    {{ LNG.tech[ResourceID] }}: {{ ResourceAmount.cost|number_format(0, ',', '.') }}
+                                                </div>
+                                                {% endfor %}
+                                                
+                                                {% if Element.costOverflow %}
+                                                <div class="text-danger">{{ LNG.bd_max_storage_reached }}</div>
+                                                {% endif %}
+                                                
+                                                <div>{{ LNG.bd_remaining_time }}: {{ Element.elementTime }}</div>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            <div class="mt-2">
+                                                {% if Element.buyable %}
+                                                <a href="game.php?page=research&amp;cmd=insert&amp;tech={{ ID }}" class="btn btn-success btn-sm">{{ LNG.bd_research }}</a>
+                                                {% else %}
+                                                <button type="button" class="btn btn-secondary btn-sm" disabled>{{ LNG.bd_research }}</button>
+                                                {% endif %}
+                                                
+                                                {% if Element.detail %}
+                                                <a href="#" onclick="return Dialog.info({{ ID }})" class="btn btn-info btn-sm ms-2">{{ LNG.bd_info }}</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends 'game_layout.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.rs_production_on_planet }} "{{ PLANET_NAME }} [{{ PLANET_GALAXY }}:{{ PLANET_SYSTEM }}:{{ PLANET_PLANET }}]"</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ LNG.rs_basic_income }}</th>
+                                    <th>{{ LNG.tech.901 }}</th>
+                                    <th>{{ LNG.tech.902 }}</th>
+                                    <th>{{ LNG.tech.903 }}</th>
+                                    <th>{{ LNG.tech.911 }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ LNG.rs_basic_income }}</td>
+                                    <td>{{ basicProduction.metal|number_format(2) }}</td>
+                                    <td>{{ basicProduction.crystal|number_format(2) }}</td>
+                                    <td>{{ basicProduction.deuterium|number_format(2) }}</td>
+                                    <td>{{ basicProduction.energy|number_format(2) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <form action="game.php?page=resources" method="post">
+                        <div class="table-responsive mt-4">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{{ LNG.rs_buildings }}</th>
+                                        <th>{{ LNG.rs_level }}</th>
+                                        <th class="text-center">{{ LNG.rs_amount }}</th>
+                                        <th>{{ LNG.rs_production }}</th>
+                                        <th>{{ LNG.tech.901 }}</th>
+                                        <th>{{ LNG.tech.902 }}</th>
+                                        <th>{{ LNG.tech.903 }}</th>
+                                        <th>{{ LNG.tech.911 }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for resourceID, resource in productionTable %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ dpath }}gebaeude/{{ resourceID }}.gif" alt="{{ LNG.tech[resourceID] }}" width="40" class="me-2">
+                                                {{ LNG.tech[resourceID] }}
+                                            </div>
+                                        </td>
+                                        <td>{{ resource.level }}</td>
+                                        <td class="text-center">
+                                            {% if resource.prodLevel %}
+                                            <div class="btn-group" role="group">
+                                                <a href="game.php?page=resources&cmd=decreasePercentage&building={{ resourceID }}" class="btn btn-sm btn-outline-danger">-</a>
+                                                <div class="btn btn-sm btn-outline-secondary">{{ resource.prodLevel }}%</div>
+                                                <a href="game.php?page=resources&cmd=increasePercentage&building={{ resourceID }}" class="btn btn-sm btn-outline-success">+</a>
+                                            </div>
+                                            {% else %}
+                                            {{ LNG.rs_not_active }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if resource.prodLevel %}
+                                            <select name="prod[{{ resourceID }}]" class="form-select form-select-sm">
+                                                {% for option in [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100] %}
+                                                <option value="{{ option }}" {% if resource.prodLevel == option %}selected{% endif %}>{{ option }}%</option>
+                                                {% endfor %}
+                                            </select>
+                                            {% endif %}
+                                        </td>
+                                        <td class="{% if resource.production.metal < 0 %}text-danger{% elseif resource.production.metal > 0 %}text-success{% endif %}">
+                                            {{ resource.production.metal|number_format(2) }}
+                                        </td>
+                                        <td class="{% if resource.production.crystal < 0 %}text-danger{% elseif resource.production.crystal > 0 %}text-success{% endif %}">
+                                            {{ resource.production.crystal|number_format(2) }}
+                                        </td>
+                                        <td class="{% if resource.production.deuterium < 0 %}text-danger{% elseif resource.production.deuterium > 0 %}text-success{% endif %}">
+                                            {{ resource.production.deuterium|number_format(2) }}
+                                        </td>
+                                        <td class="{% if resource.production.energy < 0 %}text-danger{% elseif resource.production.energy > 0 %}text-success{% endif %}">
+                                            {{ resource.production.energy|number_format(2) }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td colspan="4" class="text-end fw-bold">{{ LNG.rs_total }}</td>
+                                        <td class="{% if totalProduction.metal < 0 %}text-danger{% elseif totalProduction.metal > 0 %}text-success{% endif %} fw-bold">
+                                            {{ totalProduction.metal|number_format(2) }}
+                                        </td>
+                                        <td class="{% if totalProduction.crystal < 0 %}text-danger{% elseif totalProduction.crystal > 0 %}text-success{% endif %} fw-bold">
+                                            {{ totalProduction.crystal|number_format(2) }}
+                                        </td>
+                                        <td class="{% if totalProduction.deuterium < 0 %}text-danger{% elseif totalProduction.deuterium > 0 %}text-success{% endif %} fw-bold">
+                                            {{ totalProduction.deuterium|number_format(2) }}
+                                        </td>
+                                        <td class="{% if totalProduction.energy < 0 %}text-danger{% elseif totalProduction.energy > 0 %}text-success{% endif %} fw-bold">
+                                            {{ totalProduction.energy|number_format(2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-end fw-bold">{{ LNG.rs_daily }}</td>
+                                        <td>{{ (totalProduction.metal * 24)|number_format(2) }}</td>
+                                        <td>{{ (totalProduction.crystal * 24)|number_format(2) }}</td>
+                                        <td>{{ (totalProduction.deuterium * 24)|number_format(2) }}</td>
+                                        <td>{{ (totalProduction.energy * 24)|number_format(2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-end fw-bold">{{ LNG.rs_weekly }}</td>
+                                        <td>{{ (totalProduction.metal * 168)|number_format(2) }}</td>
+                                        <td>{{ (totalProduction.crystal * 168)|number_format(2) }}</td>
+                                        <td>{{ (totalProduction.deuterium * 168)|number_format(2) }}</td>
+                                        <td>{{ (totalProduction.energy * 168)|number_format(2) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="submit" class="btn btn-primary">{{ LNG.rs_save_settings }}</button>
+                        </div>
+                    </form>
+                    
+                    <div class="mt-4">
+                        <div class="alert alert-info">
+                            <h6>{{ LNG.rs_storage_capacity }}</h6>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <div class="mb-2">{{ LNG.tech.901 }}: {{ PLANET_STORAGE_METAL|number_format }}</div>
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ PLANET_STORAGE_METAL_PERCENT }}%;" aria-valuenow="{{ PLANET_STORAGE_METAL_PERCENT }}" aria-valuemin="0" aria-valuemax="100">{{ PLANET_STORAGE_METAL_PERCENT }}%</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-2">{{ LNG.tech.902 }}: {{ PLANET_STORAGE_CRYSTAL|number_format }}</div>
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ PLANET_STORAGE_CRYSTAL_PERCENT }}%;" aria-valuenow="{{ PLANET_STORAGE_CRYSTAL_PERCENT }}" aria-valuemin="0" aria-valuemax="100">{{ PLANET_STORAGE_CRYSTAL_PERCENT }}%</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-2">{{ LNG.tech.903 }}: {{ PLANET_STORAGE_DEUTERIUM|number_format }}</div>
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ PLANET_STORAGE_DEUTERIUM_PERCENT }}%;" aria-valuenow="{{ PLANET_STORAGE_DEUTERIUM_PERCENT }}" aria-valuemin="0" aria-valuemax="100">{{ PLANET_STORAGE_DEUTERIUM_PERCENT }}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

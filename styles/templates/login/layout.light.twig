@@ -1,0 +1,89 @@
+{# 
+   Lekki szablon układu strony dla stron logowania
+   Używany dla stron wymagających minimalnego interfejsu
+#}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ gameName }} - {{ serverinfo }}</title>
+    
+    {# Podstawowe pliki CSS #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('styles/resource/css/login/light.css', REV) }}">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    
+    {# Zmienne JavaScript #}
+    <script type="text/javascript">
+        var ServerTimezoneOffset = {{ Offset|default(0) }};
+        var serverTime = new Date({{ date[0]|default('0') }}, {{ (date[1]|default(1)) - 1 }}, {{ date[2]|default('1') }}, {{ date[3]|default('0') }}, {{ date[4]|default('0') }}, {{ date[5]|default('0') }});
+        var startTime = serverTime.getTime();
+        var localTime = serverTime;
+        var localTS = startTime;
+        var Gameurl = "{{ basepath|default('/') }}";
+        var Lang = "{{ lang }}";
+        var TIMESTAMP = {{ TIMESTAMP }};
+    </script>
+    
+    {# Podstawowe biblioteki JavaScript #}
+    <script type="text/javascript" src="{{ asset('scripts/base/jquery.js', REV) }}"></script>
+    
+    {# Dodatkowe skrypty #}
+    {% for scriptname in scripts %}
+    <script type="text/javascript" src="{{ asset('scripts/' ~ scriptname ~ '.js', REV) }}"></script>
+    {% endfor %}
+    
+    {# Skrypty inline #}
+    {% if execscript %}
+    <script type="text/javascript">
+        {{ execscript|raw }}
+    </script>
+    {% endif %}
+</head>
+
+<body class="{{ bodyclass|default('light') }}">
+    <div id="page">
+        <header>
+            <div id="logo">
+                <a href="index.php">
+                    <img src="styles/resource/images/logo.png" alt="{{ gameName }}">
+                </a>
+            </div>
+        </header>
+        
+        <div id="content">
+            <section id="main">
+                {# Treść szablonu będzie wstawiona tutaj #}
+                {% block content %}{% endblock %}
+            </section>
+        </div>
+        
+        <footer>
+            <div class="center">
+                <a href="index.php">{{ LNG.menu_index }}</a> | 
+                <a href="index.php?page=disclamer">{{ LNG.menu_disclamer }}</a>
+            </div>
+            <div class="center copyright">
+                {{ gameName }} &copy; {{ currentYear }}
+            </div>
+        </footer>
+    </div>
+    
+    {# Obsługa przekierowania #}
+    {% if goto %}
+    <script type="text/javascript">
+        var gotoinsec = {{ gotoinsec|default(3) }};
+        var gotourl = "{{ goto|raw }}";
+        
+        $(function() {
+            var SecText = "{{ LNG.redirecting }}";
+            $("#redirectJS").text(SecText);
+            
+            setTimeout(function() { 
+                document.location.href = gotourl; 
+            }, gotoinsec * 1000);
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

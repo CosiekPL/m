@@ -1,0 +1,163 @@
+{% extends 'game_layout.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.ov_planet }} "{{ PLANET_NAME }}" [{{ PLANET_GALAXY }}:{{ PLANET_SYSTEM }}:{{ PLANET_PLANET }}]</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="{{ dpath }}planets/{{ PLANET_IMAGE }}.jpg" alt="{{ PLANET_NAME }}" class="img-fluid">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <h6>{{ LNG.ov_diameter }}</h6>
+                                <p>{{ PLANET_DIAMETER }} km</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6>{{ LNG.ov_fields }}</h6>
+                                <p>{{ PLANET_FIELD_CURRENT }} / {{ PLANET_FIELD_MAX }}</p>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ PLANET_FIELD_PERCENT }}%;" aria-valuenow="{{ PLANET_FIELD_CURRENT }}" aria-valuemin="0" aria-valuemax="{{ PLANET_FIELD_MAX }}">{{ PLANET_FIELD_PERCENT }}%</div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h6>{{ LNG.ov_temperature }}</h6>
+                                <p>{{ LNG.ov_aprox }} {{ PLANET_TEMP_MIN }}°C {{ LNG.ov_temp_to }} {{ PLANET_TEMP_MAX }}°C</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if buildInfo is not empty %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.ov_building }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ dpath }}gebaeude/{{ buildInfo.id }}.gif" alt="{{ buildInfo.name }}" class="me-3" width="80">
+                        <div>
+                            <h6>{{ buildInfo.name }}</h6>
+                            <p>{{ LNG.ov_level }} {{ buildInfo.level }}</p>
+                            <p>{{ LNG.ov_remaining }}: <span class="time_building">{{ buildInfo.endtime }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if researchInfo is not empty %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.ov_research }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ dpath }}forschung/{{ researchInfo.id }}.gif" alt="{{ researchInfo.name }}" class="me-3" width="80">
+                        <div>
+                            <h6>{{ researchInfo.name }}</h6>
+                            <p>{{ LNG.ov_level }} {{ researchInfo.level }}</p>
+                            <p>{{ LNG.ov_remaining }}: <span class="time_research">{{ researchInfo.endtime }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if shipyardInfo is not empty %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.ov_shipyard }}</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                    {% for ship in shipyardInfo %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <img src="{{ dpath }}gebaeude/{{ ship.id }}.gif" alt="{{ ship.name }}" width="40" class="me-2">
+                                {{ ship.name }}
+                            </div>
+                            <span class="badge bg-primary">{{ ship.count }}</span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.ov_moon }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if MOON %}
+                    <div class="text-center">
+                        <a href="game.php?page=overview&cp={{ MOON.id }}&re=0">
+                            <img src="{{ dpath }}planets/moon.jpg" alt="{{ MOON.name }}" width="150" class="img-fluid mb-3">
+                            <h6>{{ MOON.name }} [{{ PLANET_GALAXY }}:{{ PLANET_SYSTEM }}:{{ PLANET_PLANET }}]</h6>
+                        </a>
+                        <p>{{ LNG.ov_diameter }}: {{ MOON.diameter }} km</p>
+                        <p>{{ LNG.ov_fields }}: {{ MOON.field_current }} / {{ MOON.field_max }}</p>
+                        <a href="game.php?page=overview&cp={{ MOON.id }}&re=0" class="btn btn-primary btn-sm">{{ LNG.ov_visit_moon }}</a>
+                    </div>
+                    {% else %}
+                    <div class="text-center">
+                        <img src="{{ dpath }}planets/moon.jpg" alt="Moon" width="150" class="img-fluid mb-3 opacity-25">
+                        <p>{{ LNG.ov_no_moon }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.ov_events }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if fleetEvents is empty %}
+                    <p class="text-center">{{ LNG.ov_no_fleet_events }}</p>
+                    {% else %}
+                    <ul class="list-group">
+                        {% for fleetEvent in fleetEvents %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ fleetEvent.text }}</span>
+                                <span class="badge {% if fleetEvent.status == 'friendly' %}bg-success{% elseif fleetEvent.status == 'hostile' %}bg-danger{% else %}bg-info{% endif %}">
+                                    <span class="fleet_time">{{ fleetEvent.time }}</span>
+                                </span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.ov_stats }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>{{ LNG.ov_points }}</h6>
+                        <p>{{ stats.total }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>{{ LNG.ov_rank }}</h6>
+                        <p>{{ stats.rank }} {{ LNG.ov_of }} {{ stats.total_players }}</p>
+                    </div>
+                    <a href="game.php?page=statistics" class="btn btn-outline-primary btn-sm">{{ LNG.ov_view_stats }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

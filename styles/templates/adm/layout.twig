@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{{ game_name }} - {{ page_title }}</title>
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="styles/resource/css/admin/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- AdminLTE -->
+    <link rel="stylesheet" href="styles/resource/css/admin/AdminLTE.min.css">
+    <!-- AdminLTE Skins -->
+    <link rel="stylesheet" href="styles/resource/css/admin/skin-blue.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/resource/css/admin/custom.css?v={{ REV }}">
+    
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <!-- jQuery -->
+    <script src="scripts/base/jquery.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="styles/resource/js/admin/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="styles/resource/js/admin/app.min.js"></script>
+    
+    {% for scriptName in scripts %}
+    <script type="text/javascript" src="scripts/{{ scriptName }}.js?v={{ REV }}"></script>
+    {% endfor %}
+    
+    <script type="text/javascript">
+        var serverTime = new Date({{ date[0] }}, {{ date[1] - 1 }}, {{ date[2] }}, {{ date[3] }}, {{ date[4] }}, {{ date[5] }});
+        var startTime = serverTime.getTime();
+        var localTime = serverTime;
+        var localTS = startTime;
+        
+        setInterval(function() {
+            serverTime.setSeconds(serverTime.getSeconds()+1);
+        }, 1000);
+    </script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="admin.php" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>2</b>M</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>2Moons</b> Admin</span>
+            </a>
+            
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="game.php" target="_blank"><i class="fa fa-gamepad"></i> {{ LNG.adm_cp_game }}</a>
+                        </li>
+                        <li>
+                            <a href="admin.php?page=logout"><i class="fa fa-sign-out-alt"></i> {{ LNG.adm_cp_logout }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="styles/resource/images/admin/avatar.png" class="img-circle" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p>{{ userName }}</p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> {{ LNG.adm_cp_online }}</a>
+                    </div>
+                </div>
+                
+                <!-- Sidebar Menu -->
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ LNG.adm_cp_navigation }}</li>
+                    <li{% if menu == 'overview' %} class="active"{% endif %}>
+                        <a href="admin.php"><i class="fa fa-dashboard"></i> <span>{{ LNG.adm_cp_overview }}</span></a>
+                    </li>
+                    <li{% if menu == 'users' %} class="active"{% endif %}>
+                        <a href="admin.php?page=users"><i class="fa fa-users"></i> <span>{{ LNG.adm_cp_users }}</span></a>
+                    </li>
+                    <li class="treeview{% if menu == 'universe' %} active{% endif %}">
+                        <a href="#"><i class="fa fa-globe"></i> <span>{{ LNG.adm_cp_universe }}</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="admin.php?page=universes"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_universes }}</a></li>
+                            <li><a href="admin.php?page=planets"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_planets }}</a></li>
+                            <li><a href="admin.php?page=moons"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_moons }}</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview{% if menu == 'tools' %} active{% endif %}">
+                        <a href="#"><i class="fa fa-wrench"></i> <span>{{ LNG.adm_cp_tools }}</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="admin.php?page=backup"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_backup }}</a></li>
+                            <li><a href="admin.php?page=reset"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_reset }}</a></li>
+                            <li><a href="admin.php?page=maintenance"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_maintenance }}</a></li>
+                            <li><a href="admin.php?page=clearcache"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_clearcache }}</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview{% if menu == 'settings' %} active{% endif %}">
+                        <a href="#"><i class="fa fa-cogs"></i> <span>{{ LNG.adm_cp_settings }}</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="admin.php?page=config"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_config }}</a></li>
+                            <li><a href="admin.php?page=variables"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_variables }}</a></li>
+                            <li><a href="admin.php?page=cronjob"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_cronjob }}</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview{% if menu == 'logs' %} active{% endif %}">
+                        <a href="#"><i class="fa fa-list"></i> <span>{{ LNG.adm_cp_logs }}</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="admin.php?page=messagelog"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_messagelog }}</a></li>
+                            <li><a href="admin.php?page=playerlog"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_playerlog }}</a></li>
+                            <li><a href="admin.php?page=fleetlog"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_fleetlog }}</a></li>
+                            <li><a href="admin.php?page=errorlog"><i class="fa fa-circle-o"></i> {{ LNG.adm_cp_errorlog }}</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- /.sidebar-menu -->
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        
+        <!-- Content Wrapper. Contains page content -->
+        {% block content %}{% endblock %}
+        <!-- /.content-wrapper -->
+        
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> {{ VERSION }}
+            </div>
+            <strong>Copyright &copy; 2009-{{ date[0] }} <a href="https://github.com/jkroepke/2Moons" target="_blank">2Moons</a>.</strong> All rights reserved.
+        </footer>
+    </div>
+    <!-- ./wrapper -->
+</body>
+</html>

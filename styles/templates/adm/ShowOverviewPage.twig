@@ -1,0 +1,155 @@
+{% extends "adm/layout.twig" %}
+
+{% block content %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>{{ LNG.ow_title }}</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ LNG.ow_overview }}</h3>
+                    </div>
+                    <div class="box-body">
+                        <dl class="dl-horizontal">
+                            <dt>{{ LNG.ow_server }}</dt>
+                            <dd>{{ serverInfo.php }} / {{ serverInfo.db }}</dd>
+                            <dt>{{ LNG.ow_version }}</dt>
+                            <dd>{{ gameInfo.version }}</dd>
+                            <dt>{{ LNG.ow_api_version }}</dt>
+                            <dd>{{ gameInfo.apiVersion }}</dd>
+                            <dt>{{ LNG.ow_admin_email }}</dt>
+                            <dd>{{ gameInfo.adminEmail }}</dd>
+                            <dt>{{ LNG.ow_debug_mode }}</dt>
+                            <dd>{{ gameInfo.debug ? LNG.ow_yes : LNG.ow_no }}</dd>
+                        </dl>
+                    </div>
+                </div>
+                
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ LNG.ow_database }}</h3>
+                    </div>
+                    <div class="box-body">
+                        <dl class="dl-horizontal">
+                            <dt>{{ LNG.ow_database_size }}</dt>
+                            <dd>{{ dbInfo.size }}</dd>
+                            <dt>{{ LNG.ow_database_count_tables }}</dt>
+                            <dd>{{ dbInfo.tables|length }}</dd>
+                        </dl>
+                        
+                        {% if dbInfo.needRepair %}
+                        <div class="alert alert-warning">
+                            <strong>{{ LNG.ow_need_repair }}</strong>
+                            <ul>
+                                {% for tableName in dbInfo.needRepair %}
+                                <li>{{ tableName }}</li>
+                                {% endfor %}
+                            </ul>
+                            <a href="admin.php?page=repairTables" class="btn btn-warning btn-sm">{{ LNG.ow_repair_tables }}</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ LNG.ow_statistics }}</h3>
+                    </div>
+                    <div class="box-body">
+                        <dl class="dl-horizontal">
+                            <dt>{{ LNG.ow_users_count }}</dt>
+                            <dd>{{ stats.users }}</dd>
+                            <dt>{{ LNG.ow_planets_count }}</dt>
+                            <dd>{{ stats.planets }}</dd>
+                            <dt>{{ LNG.ow_moons_count }}</dt>
+                            <dd>{{ stats.moons }}</dd>
+                            <dt>{{ LNG.ow_total_resources }}</dt>
+                            <dd>{{ stats.resources.metal }} {{ LNG.tech.901 }}, {{ stats.resources.crystal }} {{ LNG.tech.902 }}, {{ stats.resources.deuterium }} {{ LNG.tech.903 }}</dd>
+                            <dt>{{ LNG.ow_total_buildings }}</dt>
+                            <dd>{{ stats.totalBuildings }}</dd>
+                            <dt>{{ LNG.ow_total_fleet }}</dt>
+                            <dd>{{ stats.totalFleets }}</dd>
+                            <dt>{{ LNG.ow_total_research }}</dt>
+                            <dd>{{ stats.totalResearch }}</dd>
+                        </dl>
+                    </div>
+                </div>
+                
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ LNG.ow_online }}</h3>
+                    </div>
+                    <div class="box-body">
+                        {% if onlineUsers %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>{{ LNG.ow_name }}</th>
+                                    <th>{{ LNG.ow_actions }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in onlineUsers %}
+                                <tr>
+                                    <td>{{ user.username }}</td>
+                                    <td>
+                                        <a href="admin.php?page=accountEditor&user={{ user.id }}" class="btn btn-xs btn-primary">{{ LNG.ow_edit }}</a>
+                                        <a href="#" class="btn btn-xs btn-danger">{{ LNG.ow_ban }}</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="alert alert-info">{{ LNG.ow_nobody_online }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ LNG.ow_cronjobs }}</h3>
+                    </div>
+                    <div class="box-body">
+                        {% if cronjobs %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>{{ LNG.ow_name }}</th>
+                                    <th>{{ LNG.ow_next_run }}</th>
+                                    <th>{{ LNG.ow_last_run }}</th>
+                                    <th>{{ LNG.ow_actions }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cron in cronjobs %}
+                                <tr>
+                                    <td>{{ cron.name }}</td>
+                                    <td>{{ cron.nextTime|date('Y-m-d H:i:s') }}</td>
+                                    <td>{{ cron.lastTime|date('Y-m-d H:i:s') }}</td>
+                                    <td>
+                                        <a href="admin.php?page=cronjob&id={{ cron.id }}" class="btn btn-xs btn-primary">{{ LNG.ow_execute }}</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="alert alert-info">{{ LNG.ow_no_cronjobs }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

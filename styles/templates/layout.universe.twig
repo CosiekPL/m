@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="description" content="{{ LNG.meta_descripton }}">
+    <meta name="keywords" content="{{ LNG.meta_keywords }}">
+    <meta name="author" content="{{ gameInformations.authors|raw }}">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1, minimum-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+    <title>{{ LNG.title }} - {{ title }}</title>
+    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="stylesheet" type="text/css" href="styles/resource/css/base/boilerplate.css?v={{ REV }}">
+    <link rel="stylesheet" type="text/css" href="styles/resource/css/game/main.css?v={{ REV }}">
+    <link rel="stylesheet" type="text/css" href="styles/resource/css/base/jquery.fancybox.css?v={{ REV }}">
+    <link rel="stylesheet" type="text/css" href="styles/resource/css/base/jquery.qtip.css?v={{ REV }}">
+    <link rel="stylesheet" type="text/css" href="styles/resource/css/base/normalize.css?v={{ REV }}">
+    
+    <link rel="stylesheet" type="text/css" href="{{ dpath }}style.css?v={{ REV }}">
+    <link rel="stylesheet" type="text/css" href="styles/resource/css/uni.css?v={{ REV }}">
+    
+    {% for script in scripts %}
+    <script type="text/javascript" src="scripts/{{ script }}.js?v={{ REV }}"></script>
+    {% endfor %}
+    
+    <script type="text/javascript">
+        var ServerTimezoneOffset = {{ Offset }};
+        var serverTime = new Date({{ date[0] }}, {{ date[1] - 1 }}, {{ date[2] }}, {{ date[3] }}, {{ date[4] }}, {{ date[5] }});
+        var startTime = serverTime.getTime();
+        var localTime = serverTime;
+        var localTS = startTime;
+        var Gamename = "{{ gameName }}";
+        var Ready = "{{ LNG.ready }}";
+        var Skin = "{{ dpath }}";
+        var Lang = "{{ lang }}";
+        var head_info = "{{ LNG.fcm_info }}";
+        var auth = "{{ userAuthlevel }}";
+        var days = {{ LNG.week_day|json|raw }};
+        var months = {{ LNG.months|json|raw }};
+        var tdformat = "{{ LNG.js_tdformat }}";
+        var queryString = "{{ queryString }}";
+        var Path = "{{ path }}";
+        var isPlayerCardActive = "{{ isPlayerCardActive }}";
+        var externalAuth = "{{ externalAuth }}";
+        
+        setInterval(function() {
+            serverTime.setSeconds(serverTime.getSeconds()+1);
+        }, 1000);
+    </script>
+    {{ execscript|raw }}
+</head>
+<body id="{{ bodyclass }}" class="full">
+    <div id="tooltip" class="tip"></div>
+    <div id="body">
+        <header>
+            <div class="pageHeader"></div>
+        </header>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+        <footer>
+            <div class="footer"></div>
+        </footer>
+    </div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>{{ game_name }}{% if title %} - {{ title }}{% endif %}</title>
+    
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles/resource/css/login/main.css?v={{ REV }}">
+    <!DOCTYPE html>
+    <html lang="{{ lang }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        
+        <title>{{ game_name }}{% if title %} - {{ title }}{% endif %}</title>
+        
+        <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="styles/resource/css/login/main.css?v={{ REV }}">
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="scripts/base/jquery.js"></script>
+        
+        {% for scriptName in scripts %}
+        <script src="scripts/{{ scriptName }}.js?v={{ REV }}"></script>
+        {% endfor %}
+    </head>
+    <body class="login-body">
+        <div class="login-wrapper">
+            <header class="login-header">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="login-logo">
+                                <img src="styles/resource/images/logo.png" alt="{{ game_name }}" class="img-fluid">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 text-end">
+                            {% if languages %}
+                            <div class="dropdown language-select">
+                                <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-translate"></i> {{ LNG.language_current }}
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                                    {% for langKey, langName in languages %}
+                                    <li>
+                                        <a class="dropdown-item {% if langKey == lang %}active{% endif %}" href="?lang={{ langKey }}">
+                                            {{ langName }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="login-content">
+                <div class="container py-5">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+            
+            <footer class="login-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                &copy; {{ game_name }} {{ "now"|date("Y") }}
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <a href="index.php?page=disclamer" class="footer-link">{{ LNG.menu_disclamer }}</a>
+                            <a href="index.php?page=rules" class="footer-link">{{ LNG.menu_rules }}</a>
+                            <a href="index.php?page=news" class="footer-link">{{ LNG.menu_news }}</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        
+        {% if execscript %}
+        <script>
+        {{ execscript|raw }}
+        </script>
+        {% endif %}
+    </body>
+    </html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/base/jquery.js"></script>
+    <script src="scripts/login/main.js?v={{ REV }}"></script>
+    
+    {% for scriptName in scripts %}
+    <script src="scripts/{{ scriptName }}.js?v={{ REV }}"></script>
+    {% endfor %}
+    
+    <script>
+        var serverTime = new Date({{ date[0] }}, {{ date[1] - 1 }}, {{ date[2] }}, {{ date[3] }}, {{ date[4] }}, {{ date[5] }});
+        var Ready = "{{ LNG.ready }}";
+        var Skin = "{{ dpath }}";
+        var Lang = "{{ lang }}";
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 text-center pt-4 pb-3">
+                <img src="styles/resource/images/login/logo.png" alt="{{ game_name }}" class="img-fluid">
+            </div>
+        </div>
+        
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link{% if bodyclass == 'index' %} active{% endif %}" href="index.php">
+                                {{ LNG.nav_index }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if bodyclass == 'board' %} active{% endif %}" href="index.php?page=board">
+                                {{ LNG.forum }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if bodyclass == 'rules' %} active{% endif %}" href="index.php?page=rules">
+                                {{ LNG.nav_rules }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if bodyclass == 'news' %} active{% endif %}" href="index.php?page=news">
+                                {{ LNG.nav_news }}
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                {{ LNG.nav_language }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                {% for langKey, langName in available_languages %}
+                                <li>
+                                    <a class="dropdown-item{% if lang == langKey %} active{% endif %}" href="?lang={{ langKey }}">
+                                        {{ langName }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container">
+            {% block content %}{% endblock %}
+            
+            <div class="row mt-5">
+                <div class="col-md-12 text-center">
+                    <p>
+                        &copy; {{ game_name }} {{ "now"|date("Y") }} &bull; 
+                        <a href="index.php?page=disclamer">{{ LNG.menu_disclamer }}</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

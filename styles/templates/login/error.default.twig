@@ -1,0 +1,34 @@
+{# 
+   Szablon strony błędu wyświetlający komunikat i opcje przekierowania
+   Używany do wyświetlania błędów, powiadomień itp.
+#}
+{% extends "layout.light.twig" %}
+
+{% block content %}
+<div id="error_box">
+    <div class="error_message">
+        <h2>{{ LNG.fcm_info }}</h2>
+        
+        <div class="message_content">
+            {{ message|raw }}
+        </div>
+        
+        {% if redirectButtons %}
+            <div class="redirect_buttons">
+                {% for button in redirectButtons %}
+                    <a href="{{ button.url }}" class="btn {% if button.primary %}btn-primary{% else %}btn-secondary{% endif %}">
+                        {{ button.label }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% if goto %}
+            <div class="redirect_info">
+                <span id="redirectJS">{{ LNG.redirecting }}</span>
+                <span class="redirect_countdown">{{ gotoinsec }}</span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

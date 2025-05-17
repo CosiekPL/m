@@ -1,0 +1,288 @@
+{% extends 'game_layout.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.gl_galaxy }}</h5>
+                </div>
+                <div class="card-body">
+                    <form action="game.php?page=galaxy" method="post" id="galaxyForm">
+                        <input type="hidden" id="auto" value="dr">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <label for="galaxy" class="form-label">{{ LNG.gl_galaxy }}</label>
+                                        <div class="input-group">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="galaxy_submit('galaxyLeft')">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </button>
+                                            <input type="number" class="form-control text-center" id="galaxy" name="galaxy" value="{{ galaxy }}" min="1" max="{{ galaxyCount }}">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="galaxy_submit('galaxyRight')">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="system" class="form-label">{{ LNG.gl_solar_system }}</label>
+                                        <div class="input-group">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="galaxy_submit('systemLeft')">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </button>
+                                            <input type="number" class="form-control text-center" id="system" name="system" value="{{ system }}" min="1" max="{{ systemCount }}">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="galaxy_submit('systemRight')">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="ms-3">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary d-block">{{ LNG.gl_show }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="form-label">{{ LNG.gl_legend }}</label>
+                                        <div class="small">
+                                            <i class="fas fa-user-alt text-success"></i> {{ LNG.gl_legend_strong_player }}<br>
+                                            <i class="fas fa-user-alt text-warning"></i> {{ LNG.gl_legend_normal_player }}<br>
+                                            <i class="fas fa-user-alt text-danger"></i> {{ LNG.gl_legend_vacation }}<br>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">{{ LNG.gl_actions }}</label>
+                                        <div class="small">
+                                            <i class="fas fa-satellite-dish"></i> {{ LNG.gl_spy }}<br>
+                                            <i class="fas fa-envelope"></i> {{ LNG.gl_message }}<br>
+                                            <i class="fas fa-user-plus"></i> {{ LNG.gl_buddy }}<br>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">{{ LNG.gl_symbols }}</label>
+                                        <div class="small">
+                                            <i class="fas fa-exclamation-triangle text-warning"></i> {{ LNG.gl_debris_field }}<br>
+                                            <i class="fas fa-moon"></i> {{ LNG.gl_moon }}<br>
+                                            <i class="fas fa-shield-alt text-info"></i> {{ LNG.gl_alliance_protection }}<br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">{{ LNG.gl_pos }}</th>
+                                        <th class="text-center">{{ LNG.gl_planet }}</th>
+                                        <th class="text-center">{{ LNG.gl_name }}</th>
+                                        <th class="text-center">{{ LNG.gl_moon }}</th>
+                                        <th class="text-center">{{ LNG.gl_debris }}</th>
+                                        <th class="text-center">{{ LNG.gl_player }}</th>
+                                        <th class="text-center">{{ LNG.gl_alliance }}</th>
+                                        <th class="text-center">{{ LNG.gl_actions }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for planet in planetList %}
+                                    <tr>
+                                        <td class="text-center">{{ planet.pos }}</td>
+                                        <td class="text-center">
+                                            {% if planet.planetID %}
+                                            <a href="game.php?page=planet&galaxy={{ galaxy }}&system={{ system }}&planet={{ planet.pos }}" title="{{ planet.planetName }}">
+                                                <img src="{{ dpath }}planeten/small/s_{{ planet.planetImage }}.jpg" alt="{{ planet.planetName }}" class="rounded">
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if planet.planetID %}
+                                            {{ planet.planetName }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if planet.moonID %}
+                                            <a href="game.php?page=planet&galaxy={{ galaxy }}&system={{ system }}&planet={{ planet.pos }}&type=3" title="{{ planet.moonName }}">
+                                                <img src="{{ dpath }}planeten/small/s_mond.jpg" alt="{{ planet.moonName }}" class="rounded">
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if planet.debris %}
+                                            <a href="game.php?page=fleet&galaxy={{ galaxy }}&system={{ system }}&planet={{ planet.pos }}&planettype=2&target_mission=8" title="{{ LNG.gl_collect }} {{ planet.debrisMetal }} {{ LNG.tech[901] }} {{ LNG.gl_and }} {{ planet.debrisCrystal }} {{ LNG.tech[902] }}">
+                                                <i class="fas fa-trash-alt fa-2x text-warning"></i>
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if planet.userID %}
+                                            <a href="game.php?page=playercard&id={{ planet.userID }}" class="{% if planet.isVacation %}text-danger{% elseif planet.isStrong %}text-success{% else %}text-warning{% endif %}">
+                                                {{ planet.userName }}
+                                            </a>
+                                            {% if planet.isNoobProtection %}
+                                            <i class="fas fa-shield-alt text-info" title="{{ LNG.gl_newbie_protection }}"></i>
+                                            {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if planet.allianceID %}
+                                            <a href="game.php?page=alliance&mode=info&id={{ planet.allianceID }}">
+                                                {{ planet.allianceName }}
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if planet.userID and planet.userID != userID %}
+                                            <div class="btn-group">
+                                                <a href="game.php?page=fleetTable&galaxy={{ galaxy }}&system={{ system }}&planet={{ planet.pos }}&planettype=1&target_mission=1" class="btn btn-sm btn-outline-secondary" title="{{ LNG.gl_attack }}">
+                                                    <i class="fas fa-fighter-jet"></i>
+                                                </a>
+                                                <a href="game.php?page=fleetTable&galaxy={{ galaxy }}&system={{ system }}&planet={{ planet.pos }}&planettype=1&target_mission=3" class="btn btn-sm btn-outline-primary" title="{{ LNG.gl_transport }}">
+                                                    <i class="fas fa-exchange-alt"></i>
+                                                </a>
+                                                <a href="#" onclick="return sendShipsWithSpy({{ planet.pos }}, 1);" class="btn btn-sm btn-outline-info" title="{{ LNG.gl_spy }}">
+                                                    <i class="fas fa-satellite-dish"></i>
+                                                </a>
+                                                <a href="game.php?page=messages&mode=write&id={{ planet.userID }}" class="btn btn-sm btn-outline-success" title="{{ LNG.gl_message }}">
+                                                    <i class="fas fa-envelope"></i>
+                                                </a>
+                                                {% if planet.buddyRequest == 0 %}
+                                                <a href="game.php?page=buddyList&mode=request&id={{ planet.userID }}" class="btn btn-sm btn-outline-warning" title="{{ LNG.gl_buddy_request }}">
+                                                    <i class="fas fa-user-plus"></i>
+                                                </a>
+                                                {% endif %}
+                                            </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">{{ LNG.gl_no_planets }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ LNG.gl_fleet_info }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="small">
+                                            <div id="fleetstatusrow" class="mb-2">
+                                                {{ LNG.gl_fleet }}: <span id="fleetstatuscount">-</span>
+                                            </div>
+                                            {% for missionID, missionName in missionsAvailable %}
+                                            <div>{{ missionName }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ LNG.gl_resources }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row small">
+                                            <div class="col-md-4">
+                                                <div class="mb-1">{{ LNG.tech[901] }}: {{ currentPlanet.metal|number_format(0, ',', '.') }}</div>
+                                                <div>{{ LNG.tech[903] }}: {{ currentPlanet.deuterium|number_format(0, ',', '.') }}</div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-1">{{ LNG.tech[902] }}: {{ currentPlanet.crystal|number_format(0, ',', '.') }}</div>
+                                                <div>{{ LNG.tech[921] }}: {{ currentPlanet.darkmatter|number_format(0, ',', '.') }}</div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div>{{ LNG.gl_active_ships }}</div>
+                                                <div id="activeShips">{{ activeShipsCount }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var currentGalaxy = {{ galaxy }};
+var currentSystem = {{ system }};
+var maxGalaxy = {{ galaxyCount }};
+var maxSystem = {{ systemCount }};
+
+function galaxy_submit(value) {
+    if (value == "galaxyLeft" && currentGalaxy > 1) {
+        currentGalaxy--;
+        document.getElementById('galaxy').value = currentGalaxy;
+    } else if (value == "galaxyRight" && currentGalaxy < maxGalaxy) {
+        currentGalaxy++;
+        document.getElementById('galaxy').value = currentGalaxy;
+    } else if (value == "systemLeft" && currentSystem > 1) {
+        currentSystem--;
+        document.getElementById('system').value = currentSystem;
+    } else if (value == "systemRight" && currentSystem < maxSystem) {
+        currentSystem++;
+        document.getElementById('system').value = currentSystem;
+    }
+    
+    document.getElementById('galaxyForm').submit();
+    return false;
+}
+
+function sendShipsWithSpy(targetPlanet, targetType) {
+    var spyProbes = {{ settings.spyprobes }};
+    if (spyProbes <= 0) {
+        alert("{{ LNG.gl_no_ships }}");
+        return false;
+    }
+    
+    $.ajax({
+        url: 'game.php?page=fleetAjax&ajax=1',
+        type: 'POST',
+        data: {
+            mission: 6,
+            galaxy: currentGalaxy,
+            system: currentSystem,
+            planet: targetPlanet,
+            planettype: targetType,
+            ship209: spyProbes
+        },
+        success: function(response) {
+            if (response.success) {
+                alert("{{ LNG.gl_spy_sent }}");
+            } else {
+                alert(response.message);
+            }
+        }
+    });
+    
+    return false;
+}
+
+$(document).ready(function() {
+    // Aktualizacja statusu floty co 5 sekund
+    setInterval(function() {
+        $.ajax({
+            url: 'game.php?page=fleetAjax&ajax=1&mode=fleet',
+            success: function(data) {
+                $('#fleetstatuscount').text(data.count);
+                $('#activeShips').text(data.activeShips);
+            }
+        });
+    }, 5000);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{# 
+   Główny szablon strony logowania
+   Wyświetla formularz logowania, informacje o grze i aktualności
+#}
+{% extends "layout.index.twig" %}
+
+{% block content %}
+<div id="content">
+    <section id="main">
+        <div id="login_box_full">
+            <div class="login_box_inner">
+                <h1>{{ gameName }}</h1>
+                <p class="welcome">{{ LNG.login_welcome_title }}</p>
+                
+                {% if newsMessage %}
+                <div class="news_message">
+                    <h2>{{ LNG.news_overview }}</h2>
+                    <p>{{ newsMessage|nl2br }}</p>
+                </div>
+                {% endif %}
+                
+                <div class="login_form">
+                    <form id="login" name="login" action="index.php?page=login" method="post">
+                        <div class="form-group">
+                            <label for="universe">{{ LNG.universe }}</label>
+                            <select name="uni" id="universe" class="form-control">
+                                {% for uniID, uniName in universeSelect %}
+                                    <option value="{{ uniID }}" {% if uniID == UNI %}selected{% endif %}>{{ uniName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">{{ LNG.loginUsername }}</label>
+                            <input name="username" id="username" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">{{ LNG.loginPassword }}</label>
+                            <input name="password" id="password" type="password" class="form-control" required>
+                        </div>
+                        
+                        {% if recaptchaEnable %}
+                        <div class="form-group">
+                            <div class="g-recaptcha" data-sitekey="{{ recaptchaPublicKey }}"></div>
+                            <script src="https://www.google.com/recaptcha/api.js"></script>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="form-group">
+                            <label class="remember-me">
+                                <input type="checkbox" name="remember_me" value="1"> {{ LNG.loginRememberMe }}
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">{{ LNG.loginButton }}</button>
+                            <a href="index.php?page=register" class="btn btn-secondary">{{ LNG.buttonRegister }}</a>
+                        </div>
+                        <div class="form-group password-links">
+                            <a href="index.php?page=lostPassword">{{ LNG.loginLostPassword }}</a>
+                            {% if mailEnable %}
+                            <span class="separator">|</span>
+                            <a href="index.php?page=screens">{{ LNG.menu_screenshots }}</a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+                
+                {% if facebookEnable %}
+                <div class="social-login">
+                    <p>{{ LNG.loginWith }}</p>
+                    <a href="#" class="fb-login" onclick="return fbLogin();">
+                        <img src="styles/resource/images/login/facebook.png" alt="Facebook Login">
+                        {{ LNG.loginFacebook }}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div id="game_info">
+            <div class="info_box">
+                <h2>{{ LNG.gameInformations }}</h2>
+                <div class="game_stats">
+                    <div class="stat_item">
+                        <span class="stat_label">{{ LNG.players }}</span>
+                        <span class="stat_value">{{ userCount|number }}</span>
+                    </div>
+                    <div class="stat_item">
+                        <span class="stat_label">{{ LNG.online }}</span>
+                        <span class="stat_value">{{ usersOnline|number }}</span>
+                    </div>
+                    <div class="stat_item">
+                        <span class="stat_label">{{ LNG.register_now }}</span>
+                        <a href="index.php?page=register" class="register_btn">{{ LNG.buttonRegister }}</a>
+                    </div>
+                </div>
+                
+                <div class="game_description">
+                    {{ LNG.login_desc|nl2br }}
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

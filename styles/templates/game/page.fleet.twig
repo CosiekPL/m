@@ -1,0 +1,598 @@
+{% extends 'game_layout.twig' %}
+{% extends 'game_layout.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.fl_fleet }}</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Tabela aktywnych flot -->
+                    <div class="table-responsive mb-4">
+                        <h6 class="mb-3">{{ LNG.fl_fleet_missions }}</h6>
+                        {% if activeFleets|length > 0 %}
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ LNG.fl_number }}</th>
+                                    <th>{{ LNG.fl_mission }}</th>
+                                    <th>{{ LNG.fl_from }}</th>
+                                    <th>{{ LNG.fl_destination }}</th>
+                                    <th>{{ LNG.fl_departure }}</th>
+                                    <th>{{ LNG.fl_arrival }}</th>
+                                    <th>{{ LNG.fl_return }}</th>
+                                    <th>{{ LNG.fl_actions }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for fleet in activeFleets %}
+                                <tr id="fleet_{{ fleet.id }}">
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ fleet.mission_name }}</td>
+                                    <td>
+                                        <a href="game.php?page=galaxy&galaxy={{ fleet.start_galaxy }}&system={{ fleet.start_system }}">
+                                            {{ fleet.start_name }} [{{ fleet.start_galaxy }}:{{ fleet.start_system }}:{{ fleet.start_planet }}]
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="game.php?page=galaxy&galaxy={{ fleet.end_galaxy }}&system={{ fleet.end_system }}">
+                                            {{ fleet.end_name|default('-') }} [{{ fleet.end_galaxy }}:{{ fleet.end_system }}:{{ fleet.end_planet }}]
+                                        </a>
+                                    </td>
+                                    <td>{{ fleet.start_time|date("d.m.Y H:i:s") }}</td>
+                                    <td id="arrival_{{ fleet.id }}">{{ fleet.arrival_time|date("d.m.Y H:i:s") }}</td>
+                                    <td id="return_{{ fleet.id }}">{{ fleet.return_time|date("d.m.Y H:i:s") }}</td>
+                                    <td>
+                                        {% if fleet.mission == 1 and fleet.stage == 0 %}
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="fleetAbort({{ fleet.id }})">
+                                            {{ LNG.fl_cancel }}
+                                        </button>
+                                        {% endif %}
+                                        <button type="button" class="btn btn-sm btn-info" onclick="fleetDetails({{ fleet.id }})">
+                                            {{ LNG.fl_details }}
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="alert alert-info">
+                            {{ LNG.fl_no_fleet }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Formularz wysyłania floty -->
+                    <form action="game.php?page=fleetStep1" method="post" id="fleetForm">
+                        <h6 class="mb-3">{{ LNG.fl_new_mission }}</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ LNG.fl_available_ships }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if availableShips|length > 0 %}
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-sm btn-secondary" onclick="selectAll()">{{ LNG.fl_select_all }}</button>
+                                                    <button type="button" class="btn btn-sm btn-secondary" onclick="deselectAll()">{{ LNG.fl_deselect_all }}</button>
+                                                    <button type="button" class="btn btn-sm btn-secondary" onclick="maxAll()">{{ LNG.fl_max_all }}</button>
+                                                </div>
+                                            </div>
+                                            
+                                            {% for shipID, shipData in availableShips %}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="ship-item">
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="{{ dpath }}gebaeude/{{ shipID }}.gif" alt="{{ LNG.tech[shipID] }}" class="me-2" width="40">
+                                                        <div>
+                                                            <div class="fw-bold">{{ LNG.tech[shipID] }}</div>
+                                                            <div class="small">{{ LNG.fl_count }}: {{ shipData.count|number_format(0, ',', '.') }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <input type="number" class="form-control form-control-sm ship-input" id="ship{{ shipID }}" name="ship[{{ shipID }}]" min="0" max="{{ shipData.count }}" value="0">
+                                                    </div>
+                                                    <div class="mt-1 text-end">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addShips({{ shipID }}, {{ shipData.count }})">{{ LNG.fl_max }}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        <div class="alert alert-warning">
+                                            {{ LNG.fl_no_ships }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ LNG.fl_target }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <label for="galaxy" class="form-label">{{ LNG.fl_galaxy }}</label>
+                                                <input type="number" class="form-control" id="galaxy" name="galaxy" min="1" max="{{ maxGalaxy }}" value="{{ currentPlanet.galaxy }}">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="system" class="form-label">{{ LNG.fl_system }}</label>
+                                                <input type="number" class="form-control" id="system" name="system" min="1" max="{{ maxSystem }}" value="{{ currentPlanet.system }}">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="planet" class="form-label">{{ LNG.fl_planet }}</label>
+                                                <input type="number" class="form-control" id="planet" name="planet" min="1" max="{{ maxPlanet }}" value="{{ currentPlanet.planet }}">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="planettype" class="form-label">{{ LNG.fl_planettype }}</label>
+                                            <select class="form-select" id="planettype" name="planettype">
+                                                <option value="1">{{ LNG.fl_planettype_1 }}</option>
+                                                <option value="2">{{ LNG.fl_planettype_2 }}</option>
+                                                <option value="3">{{ LNG.fl_planettype_3 }}</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="speed" class="form-label">{{ LNG.fl_speed }}</label>
+                                            <select class="form-select" id="speed" name="speed">
+                                                {% for speedValue in 1..10 %}
+                                                <option value="{{ speedValue * 10 }}" {% if speedValue == 10 %}selected{% endif %}>{{ speedValue * 10 }}%</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label>{{ LNG.fl_ships_selected }}</label>
+                                            <div id="shipSummary" class="border p-2 rounded">
+                                                <div class="text-muted text-center">{{ LNG.fl_no_ships_selected }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label>{{ LNG.fl_estimated_arrival }}</label>
+                                            <div id="arrivalTime" class="border p-2 rounded">-</div>
+                                        </div>
+                                        
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary" id="sendFleet" disabled>{{ LNG.fl_continue }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal szczegółów floty -->
+<div class="modal fade" id="fleetDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ LNG.fl_fleet_details }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="fleetDetailsContent">
+                <!-- Zawartość zostanie załadowana dynamicznie -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ LNG.fl_close }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+// Globalne zmienne
+var fleetData = {};
+var detailsModal;
+
+$(document).ready(function() {
+    // Inicjalizacja modala
+    detailsModal = new bootstrap.Modal(document.getElementById('fleetDetailsModal'));
+    
+    // Nasłuchiwanie zmian w polach statków
+    $('.ship-input').on('input', updateFleetSummary);
+    
+    // Aktualizacja czasu przybycia przy zmianie współrzędnych lub prędkości
+    $('#galaxy, #system, #planet, #planettype, #speed').on('change', calculateArrivalTime);
+});
+
+// Funkcja dodająca określoną liczbę statków danego typu
+function addShips(shipID, maxCount) {
+    var inputField = document.getElementById('ship' + shipID);
+    inputField.value = maxCount;
+    updateFleetSummary();
+}
+
+// Funkcja zaznaczająca wszystkie statki
+function selectAll() {
+    $('.ship-input').each(function() {
+        if (parseInt($(this).attr('max')) > 0) {
+            $(this).val(1);
+        }
+    });
+    updateFleetSummary();
+}
+
+// Funkcja odznaczająca wszystkie statki
+function deselectAll() {
+    $('.ship-input').val(0);
+    updateFleetSummary();
+}
+
+// Funkcja zaznaczająca maksymalną liczbę wszystkich statków
+function maxAll() {
+    $('.ship-input').each(function() {
+        $(this).val($(this).attr('max'));
+    });
+    updateFleetSummary();
+}
+
+// Funkcja aktualizująca podsumowanie floty
+function updateFleetSummary() {
+    var shipCount = 0;
+    var shipSummaryHtml = '';
+    
+    $('.ship-input').each(function() {
+        var shipID = $(this).attr('id').replace('ship', '');
+        var count = parseInt($(this).val()) || 0;
+        
+        if (count > 0) {
+            shipCount += count;
+            shipSummaryHtml += '<div class="d-flex justify-content-between mb-1">';
+            shipSummaryHtml += '<span>' + count + ' x ' + '{{ LNG.tech[' + shipID + '] }}' + '</span>';
+            shipSummaryHtml += '</div>';
+        }
+    });
+    
+    if (shipCount > 0) {
+        $('#shipSummary').html(shipSummaryHtml);
+        $('#sendFleet').prop('disabled', false);
+        calculateArrivalTime();
+    } else {
+        $('#shipSummary').html('<div class="text-muted text-center">{{ LNG.fl_no_ships_selected }}</div>');
+        $('#arrivalTime').text('-');
+        $('#sendFleet').prop('disabled', true);
+    }
+}
+
+// Funkcja obliczająca czas przybycia floty
+function calculateArrivalTime() {
+    var shipData = {};
+    var hasShips = false;
+    
+    $('.ship-input').each(function() {
+        var shipID = $(this).attr('id').replace('ship', '');
+        var count = parseInt($(this).val()) || 0;
+        
+        if (count > 0) {
+            shipData[shipID] = count;
+            hasShips = true;
+        }
+    });
+    
+    if (!hasShips) {
+        return;
+    }
+    
+    var targetGalaxy = $('#galaxy').val();
+    var targetSystem = $('#system').val();
+    var targetPlanet = $('#planet').val();
+    var targetType = $('#planettype').val();
+    var speed = $('#speed').val();
+    
+    $.ajax({
+        url: 'game.php?page=fleetAjax&mode=calculateTime',
+        type: 'POST',
+        data: {
+            ships: JSON.stringify(shipData),
+            galaxy: targetGalaxy,
+            system: targetSystem,
+            planet: targetPlanet,
+            planettype: targetType,
+            speed: speed
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#arrivalTime').html(
+                    '<div>' + response.duration + '</div>' +
+                    '<div>{{ LNG.fl_arrival }}: ' + response.arrival + '</div>' +
+                    '<div>{{ LNG.fl_return }}: ' + response.returnTime + '</div>'
+                );
+            } else {
+                $('#arrivalTime').text(response.message || '{{ LNG.fl_error }}');
+            }
+        }
+    });
+}
+
+// Funkcja wyświetlająca szczegóły floty
+function fleetDetails(fleetID) {
+    $.ajax({
+        url: 'game.php?page=fleetAjax&mode=details',
+        type: 'GET',
+        data: { id: fleetID },
+        success: function(response) {
+            if (response.success) {
+                var detailsHtml = '<div class="mb-3">';
+                detailsHtml += '<h6>{{ LNG.fl_mission }}: ' + response.data.mission_name + '</h6>';
+                detailsHtml += '<div>{{ LNG.fl_from }}: ' + response.data.start_name + ' [' + response.data.start_galaxy + ':' + response.data.start_system + ':' + response.data.start_planet + ']</div>';
+                detailsHtml += '<div>{{ LNG.fl_destination }}: ' + (response.data.end_name || '-') + ' [' + response.data.end_galaxy + ':' + response.data.end_system + ':' + response.data.end_planet + ']</div>';
+                detailsHtml += '</div>';
+                
+                detailsHtml += '<div class="mb-3">';
+                detailsHtml += '<h6>{{ LNG.fl_ships }}</h6>';
+                detailsHtml += '<div class="row">';
+                
+                // Statki
+                for (var shipID in response.data.ships) {
+                    detailsHtml += '<div class="col-md-4 mb-2">';
+                    detailsHtml += '<div>' + response.data.ships[shipID].name + ': ' + response.data.ships[shipID].count + '</div>';
+                    detailsHtml += '</div>';
+                }
+                
+                detailsHtml += '</div>';
+                detailsHtml += '</div>';
+                
+                // Zasoby
+                if (response.data.resources) {
+                    detailsHtml += '<div class="mb-3">';
+                    detailsHtml += '<h6>{{ LNG.fl_resources }}</h6>';
+                    detailsHtml += '<div class="row">';
+                    detailsHtml += '<div class="col-md-4"><span class="fw-bold">{{ LNG.tech[901] }}:</span> ' + response.data.resources.metal + '</div>';
+                    detailsHtml += '<div class="col-md-4"><span class="fw-bold">{{ LNG.tech[902] }}:</span> ' + response.data.resources.crystal + '</div>';
+                    detailsHtml += '<div class="col-md-4"><span class="fw-bold">{{ LNG.tech[903] }}:</span> ' + response.data.resources.deuterium + '</div>';
+                    detailsHtml += '</div>';
+                    detailsHtml += '</div>';
+                }
+                
+                $('#fleetDetailsContent').html(detailsHtml);
+                detailsModal.show();
+            } else {
+                alert(response.message || '{{ LNG.fl_error }}');
+            }
+        }
+    });
+}
+
+// Funkcja anulująca misję floty
+function fleetAbort(fleetID) {
+    if (!confirm('{{ LNG.fl_confirm_abort }}')) {
+        return;
+    }
+    
+    $.ajax({
+        url: 'game.php?page=fleetAjax&mode=abort',
+        type: 'POST',
+        data: { id: fleetID },
+        success: function(response) {
+            if (response.success) {
+                $('#fleet_' + fleetID).addClass('table-success').fadeOut(1000, function() {
+                    $(this).remove();
+                });
+                alert('{{ LNG.fl_abort_success }}');
+            } else {
+                alert(response.message || '{{ LNG.fl_error }}');
+            }
+        }
+    });
+}
+
+// Odliczanie czasu dla aktywnych flot
+function updateFleetTimers() {
+    {% if activeFleets|length > 0 %}
+    {% for fleet in activeFleets %}
+    updateTimer({{ fleet.id }}, {{ fleet.arrival_time_seconds }}, {{ fleet.return_time_seconds }});
+    {% endfor %}
+    {% endif %}
+}
+
+function updateTimer(fleetID, arrivalTime, returnTime) {
+    var now = Math.floor(Date.now() / 1000);
+    
+    var arrivalDiff = arrivalTime - now;
+    var returnDiff = returnTime - now;
+    
+    if (arrivalDiff > 0) {
+        // Flota w drodze do celu
+        $('#arrival_' + fleetID).html(formatTime(arrivalDiff));
+        $('#return_' + fleetID).html(formatTime(returnDiff));
+    } else if (returnDiff > 0) {
+        // Flota w drodze powrotnej
+        $('#arrival_' + fleetID).html('{{ LNG.fl_arrived }}');
+        $('#return_' + fleetID).html(formatTime(returnDiff));
+    } else {
+        // Flota wróciła
+        $('#arrival_' + fleetID).html('{{ LNG.fl_arrived }}');
+        $('#return_' + fleetID).html('{{ LNG.fl_returned }}');
+        $('#fleet_' + fleetID).fadeOut(1000, function() {
+            $(this).remove();
+        });
+    }
+}
+
+function formatTime(seconds) {
+    var hours = Math.floor(seconds / 3600);
+    var minutes = Math.floor((seconds % 3600) / 60);
+    var secs = seconds % 60;
+    
+    return (hours < 10 ? '0' + hours : hours) + ':' + 
+           (minutes < 10 ? '0' + minutes : minutes) + ':' + 
+           (secs < 10 ? '0' + secs : secs);
+}
+
+// Aktualizacja odliczania co sekundę
+setInterval(updateFleetTimers, 1000);
+</script>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ LNG.fl_fleet }}</h5>
+                    <span>{{ LNG.fl_slots }}: {{ fleetSlots }} / {{ maxFleetSlots }}</span>
+                </div>
+                <div class="card-body">
+                    {% if activeFleetSlots > 0 %}
+                    <div class="mb-4">
+                        <h6>{{ LNG.fl_expeditions }}: {{ activeExpeditions }} / {{ maxExpeditions }}</h6>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{{ LNG.fl_number }}</th>
+                                        <th>{{ LNG.fl_mission }}</th>
+                                        <th>{{ LNG.fl_amount }}</th>
+                                        <th>{{ LNG.fl_from }}</th>
+                                        <th>{{ LNG.fl_destination }}</th>
+                                        <th>{{ LNG.fl_arrival_time }}</th>
+                                        <th>{{ LNG.fl_return_time }}</th>
+                                        <th>{{ LNG.fl_action }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for fleetID, fleetRow in fleetList %}
+                                    <tr>
+                                        <td>{{ fleetID }}</td>
+                                        <td>
+                                            <span class="badge {% if fleetRow.mission == 1 %}bg-primary{% elseif fleetRow.mission == 3 %}bg-success{% elseif fleetRow.mission == 5 %}bg-info{% else %}bg-secondary{% endif %}">
+                                                {{ LNG.type_mission[fleetRow.mission] }}
+                                            </span>
+                                        </td>
+                                        <td>{{ fleetRow.amount }}</td>
+                                        <td>
+                                            <a href="game.php?page=galaxy&amp;galaxy={{ fleetRow.startGalaxy }}&amp;system={{ fleetRow.startSystem }}">
+                                                {{ fleetRow.startPlanetName }} [{{ fleetRow.startGalaxy }}:{{ fleetRow.startSystem }}:{{ fleetRow.startPlanet }}]
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="game.php?page=galaxy&amp;galaxy={{ fleetRow.endGalaxy }}&amp;system={{ fleetRow.endSystem }}">
+                                                {{ fleetRow.endPlanetName|default(LNG.fl_empty_target) }} [{{ fleetRow.endGalaxy }}:{{ fleetRow.endSystem }}:{{ fleetRow.endPlanet }}]
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span class="fleet_time" data-time="{{ fleetRow.arrivalTime }}">{{ fleetRow.arrivalTime|date('Y-m-d H:i:s') }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="fleet_time" data-time="{{ fleetRow.returnTime }}">{{ fleetRow.returnTime|date('Y-m-d H:i:s') }}</span>
+                                        </td>
+                                        <td>
+                                            {% if fleetRow.mission == 1 and fleetRow.state == 0 %}
+                                            <a href="game.php?page=fleetTable&amp;action=sendFleetBack&amp;fleetID={{ fleetID }}" class="btn btn-sm btn-warning">{{ LNG.fl_send_back }}</a>
+                                            {% endif %}
+                                            {% if fleetRow.mission == 5 and fleetRow.state == 0 %}
+                                            <a href="game.php?page=fleetTable&amp;action=abortMission&amp;fleetID={{ fleetID }}" class="btn btn-sm btn-danger">{{ LNG.fl_abort_mission }}</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <form action="game.php?page=fleetStep1" method="post">
+                        <div class="mb-4">
+                            <h6 class="mb-3">{{ LNG.fl_fleet_composition }}</h6>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ LNG.fl_ship_type }}</th>
+                                            <th>{{ LNG.fl_ship_available }}</th>
+                                            <th>{{ LNG.fl_ship_capacity }}</th>
+                                            <th>{{ LNG.fl_ship_speed }}</th>
+                                            <th>{{ LNG.fl_ship_fuel }}</th>
+                                            <th>{{ LNG.fl_ship_select }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for shipID, shipData in availableShips %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ dpath }}gebaeude/{{ shipID }}.gif" alt="{{ LNG.tech[shipID] }}" width="40" class="me-2">
+                                                    {{ LNG.tech[shipID] }}
+                                                </div>
+                                            </td>
+                                            <td>{{ shipData.count|number_format(0, ',', '.') }}</td>
+                                            <td>{{ shipData.capacity|number_format(0, ',', '.') }}</td>
+                                            <td>{{ shipData.speed|number_format(0, ',', '.') }}</td>
+                                            <td>{{ shipData.fuel|number_format(0, ',', '.') }}</td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control form-control-sm" name="ship[{{ shipID }}]" id="ship{{ shipID }}" value="0" min="0" max="{{ shipData.count }}">
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('ship{{ shipID }}').value='{{ shipData.count }}'">{{ LNG.fl_all }}</button>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('ship{{ shipID }}').value='0'">{{ LNG.fl_none }}</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-3">
+                                <div>
+                                    <button type="button" class="btn btn-secondary" onclick="setMaxShips()">{{ LNG.fl_select_all_ships }}</button>
+                                    <button type="button" class="btn btn-outline-secondary ms-2" onclick="resetShips()">{{ LNG.fl_reset_ships }}</button>
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn btn-primary" {% if availableShips is empty %}disabled{% endif %}>{{ LNG.fl_continue }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if messages is not empty %}
+            <div class="alert alert-info">
+                <h6>{{ LNG.fl_recent_activity }}</h6>
+                <ul class="list-group list-group-flush mt-2">
+                    {% for message in messages %}
+                    <li class="list-group-item bg-transparent">{{ message|raw }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+function setMaxShips() {
+    {% for shipID, shipData in availableShips %}
+    document.getElementById('ship{{ shipID }}').value = '{{ shipData.count }}';
+    {% endfor %}
+}
+
+function resetShips() {
+    {% for shipID, shipData in availableShips %}
+    document.getElementById('ship{{ shipID }}').value = '0';
+    {% endfor %}
+}
+</script>
+{% endblock %}

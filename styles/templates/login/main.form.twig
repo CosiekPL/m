@@ -1,0 +1,110 @@
+{% extends "layout.universe.twig" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{{ LNG.login_welcome_to }} {{ servername }}</h4>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                <div class="alert alert-danger">
+                    {{ error|raw }}
+                </div>
+                {% endif %}
+                
+                <form id="loginForm" method="post">
+                    <div class="form-group mb-3">
+                        <label for="username">{{ LNG.loginUsername }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" id="username" name="username" class="form-control" value="{{ username }}" placeholder="{{ LNG.loginUsername }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="password">{{ LNG.loginPassword }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="{{ LNG.loginPassword }}" required>
+                        </div>
+                    </div>
+                    
+                    {% if shortRegEnabled %}
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="registerCheck" name="registerCheck">
+                        <label class="form-check-label" for="registerCheck">{{ LNG.login_register_instead }}</label>
+                    </div>
+                    {% endif %}
+                    
+                    {% if rememberMeEnabled %}
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="rememberme" name="rememberme">
+                        <label class="form-check-label" for="rememberme">{{ LNG.loginRememberMe }}</label>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid">
+                        <button type="submit" name="submit" class="btn btn-primary btn-lg">{{ LNG.loginButton }}</button>
+                    </div>
+                    
+                    <input type="hidden" name="redirect" value="{{ redirect }}">
+                    <input type="hidden" name="universe" value="{{ universe }}">
+                </form>
+                
+                <div class="text-center mt-3">
+                    <a href="index.php?page=register" class="btn btn-outline-secondary">{{ LNG.loginRegister }}</a>
+                    <a href="index.php?page=lostPassword" class="btn btn-outline-secondary">{{ LNG.loginLostPassword }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">{{ LNG.login_server_stats }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center stats-row">
+                    <div class="col-md-4">
+                        <div class="stats-item">
+                            <div class="h1">{{ users_amount|number_format }}</div>
+                            <div>{{ LNG.login_players }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-item">
+                            <div class="h1">{{ users_online|number_format }}</div>
+                            <div>{{ LNG.login_online }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-item">
+                            <div class="h1">{{ game_speed|number_format }}</div>
+                            <div>{{ LNG.login_game_speed }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if news %}
+<div class="row mt-4">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">{{ LNG.login_news }}</h5>
+            </div>
+            <div class="card-body">
+                {{ news|raw }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

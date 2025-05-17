@@ -1,0 +1,57 @@
+{% extends "layout.index.twig" %}
+
+{% block content %}
+<div id="content">
+    <div id="right_side" class="conteiner">
+        <div class="right_menu">
+            {{ render_block('LoginMenu') }}
+        </div>
+    </div>
+    <div id="left_side" class="conteiner">
+        <div id="title" class="conteiner">
+            <h2>{{ servername }}</h2>
+        </div>
+        {% if newsMessage %}
+        <div class="conteiner" id="news">
+            <h2>{{ LNG.news_overview }}</h2>
+            {% for news in newsMessage %}
+            <div class="news_row">
+                <span class="news_span"><b>{{ news.title }}</b> {{ news.from }}</span>
+                <div class="news_content">
+                    {{ news.text|raw }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div id="desc_section" class="conteiner">
+            <div class="desc_content">
+                <div class="desc_image">
+                    <img src="styles/resource/images/login/about.jpg" alt="">
+                </div>
+                <div class="desc_text">
+                    <h2>{{ LNG.site_title }}</h2>
+                    <p>{{ LNG.game_description }}</p>
+                    <div class="register_block">
+                        <div class="buttons">
+                            <a href="index.php?page=register">
+                                <input class="submit" type="button" value="{{ LNG.register_now }}">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="screens_section" class="conteiner">
+            <h2>{{ LNG.screenshots }}</h2>
+            <div class="galery">
+                {% for screenshot in screenshots %}
+                <a class="screen_shot" href="{{ screenshot.path }}" target="_blank" rel="gallery">
+                    <img src="{{ screenshot.thumbnail }}" alt="">
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

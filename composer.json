@@ -1,0 +1,57 @@
+{
+    "name": "FreeStar",
+    "description": "Online strategy game",
+    "type": "alfa",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cosiek",
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "require-dev": {}
+}
+{
+    "name": "jkroepke/2moons",
+    "description": "2Moons is a free browser game engine",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jan Kröpke",
+            "email": "info@2moons.cc"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.4.0",
+        "smarty/smarty": "^4.3",
+        "twig/twig": "^3.7",
+        "ext-pdo": "*",
+        "ext-mbstring": "*",
+        "ext-json": "*",
+        "ext-bcmath": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.4",
+        "phpstan/phpstan": "^1.10",
+        "squizlabs/php_codesniffer": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "includes/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.4.0"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "phpstan": "phpstan analyse -c phpstan.neon",
+        "phpcs": "phpcs",
+        "phpcbf": "phpcbf"
+    }
+}

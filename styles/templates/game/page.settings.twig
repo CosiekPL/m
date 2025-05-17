@@ -1,0 +1,195 @@
+{% extends 'game_layout.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.op_options_title }}</h5>
+                </div>
+                <div class="card-body">
+                    <form action="game.php?page=settings" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ LNG.op_user_data }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label">{{ LNG.op_username }}</label>
+                                            <input type="text" class="form-control" id="username" name="username" value="{{ username }}" {% if not canChangeUsername %}readonly{% endif %}>
+                                            {% if not canChangeUsername %}
+                                            <div class="form-text text-muted">{{ LNG.op_username_change_not_allowed }}</div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">{{ LNG.op_email }}</label>
+                                            <input type="email" class="form-control" id="email" name="email" value="{{ email }}">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="currentpass" class="form-label">{{ LNG.op_old_pass }}</label>
+                                            <input type="password" class="form-control" id="currentpass" name="currentpass">
+                                            <div class="form-text text-muted">{{ LNG.op_need_pass_changes }}</div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="newpass" class="form-label">{{ LNG.op_new_pass }}</label>
+                                            <input type="password" class="form-control" id="newpass" name="newpass">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="newpass2" class="form-label">{{ LNG.op_repeat_new_pass }}</label>
+                                            <input type="password" class="form-control" id="newpass2" name="newpass2">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ LNG.op_general_settings }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="language" class="form-label">{{ LNG.op_language }}</label>
+                                            <select class="form-select" id="language" name="language">
+                                                {% for langKey, langName in availableLanguages %}
+                                                <option value="{{ langKey }}" {% if userLanguage == langKey %}selected{% endif %}>{{ langName }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="timezone" class="form-label">{{ LNG.op_timezone }}</label>
+                                            <select class="form-select" id="timezone" name="timezone">
+                                                {% for timezoneValue, timezoneName in timezones %}
+                                                <option value="{{ timezoneValue }}" {% if userTimezone == timezoneValue %}selected{% endif %}>{{ timezoneName }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="vacation" name="vacation" {% if vacation %}checked{% endif %}>
+                                                <label class="form-check-label" for="vacation">{{ LNG.op_vacation_mode }}</label>
+                                            </div>
+                                            <div class="form-text text-muted">{{ LNG.op_vacation_mode_desc }}</div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="delete" name="delete" {% if delete %}checked{% endif %}>
+                                                <label class="form-check-label" for="delete">{{ LNG.op_delete_account }}</label>
+                                            </div>
+                                            <div class="form-text text-muted">{{ LNG.op_delete_account_desc }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ LNG.op_game_settings }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="planetSort" name="planetSort" value="1" {% if settings.planetSort == 1 %}checked{% endif %}>
+                                                <label class="form-check-label" for="planetSort">{{ LNG.op_sort_planets_by }}</label>
+                                            </div>
+                                            <select class="form-select mt-2" id="planetOrder" name="planetOrder">
+                                                <option value="0" {% if settings.planetOrder == 0 %}selected{% endif %}>{{ LNG.op_sort_planets_0 }}</option>
+                                                <option value="1" {% if settings.planetOrder == 1 %}selected{% endif %}>{{ LNG.op_sort_planets_1 }}</option>
+                                                <option value="2" {% if settings.planetOrder == 2 %}selected{% endif %}>{{ LNG.op_sort_planets_2 }}</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="spycount" name="spycount" value="1" {% if settings.spycount == 1 %}checked{% endif %}>
+                                                <label class="form-check-label" for="spycount">{{ LNG.op_spy_probes_number }}</label>
+                                            </div>
+                                            <input type="number" class="form-control mt-2" id="spyprobes" name="spyprobes" min="1" max="100" value="{{ settings.spyprobes }}">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="noipcheck" name="noipcheck" value="1" {% if settings.noipcheck == 1 %}checked{% endif %}>
+                                                <label class="form-check-label" for="noipcheck">{{ LNG.op_deactivate_ipcheck }}</label>
+                                            </div>
+                                            <div class="form-text text-muted">{{ LNG.op_deactivate_ipcheck_desc }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ LNG.op_display_settings }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="skin" class="form-label">{{ LNG.op_skin_example }}</label>
+                                            <select class="form-select" id="skin" name="skin">
+                                                {% for skinName, skinInfo in availableSkins %}
+                                                <option value="{{ skinName }}" {% if selectedSkin == skinName %}selected{% endif %}>{{ skinInfo.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="mt-2">
+                                                <img id="skinPreview" src="{{ dpath }}preview.jpg" alt="Skin Preview" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="animation" name="animation" value="1" {% if settings.animation == 1 %}checked{% endif %}>
+                                                <label class="form-check-label" for="animation">{{ LNG.op_animation }}</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="tooltiptime" name="tooltiptime" value="1" {% if settings.tooltiptime == 1 %}checked{% endif %}>
+                                                <label class="form-check-label" for="tooltiptime">{{ LNG.op_tooltip_time }}</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="fleetajax" name="fleetajax" value="1" {% if settings.fleetajax == 1 %}checked{% endif %}>
+                                                <label class="form-check-label" for="fleetajax">{{ LNG.op_ajax_fleet }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="submit" name="save" class="btn btn-primary">{{ LNG.op_save_changes }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#skin').change(function() {
+        var selectedSkin = $(this).val();
+        $('#skinPreview').attr('src', 'styles/skins/' + selectedSkin + '/preview.jpg');
+    });
+});
+</script>
+{% endblock %}

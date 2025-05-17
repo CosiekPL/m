@@ -1,0 +1,111 @@
+{% extends "game_layout.twig" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ LNG.mission_title }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if missions %}
+                    <div class="row">
+                        {% for missionID, missionData in missions %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 mission-card {{ missionData.available ? '' : 'bg-light text-muted' }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ missionData.name }}</h5>
+                                    <p class="card-text">{{ missionData.description }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    {% if missionData.available %}
+                                    <button class="btn btn-primary btn-sm" onclick="setMission({{ missionID }})">{{ LNG.mission_select }}</button>
+                                    {% else %}
+                                    <button class="btn btn-secondary btn-sm" disabled>{{ LNG.mission_unavailable }}</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">{{ LNG.mission_no_missions }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>{{ LNG.mission_fleet_details }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>{{ LNG.mission_origin }}</h6>
+                            <p>{{ fleet.origin.name }} [{{ fleet.origin.galaxy }}:{{ fleet.origin.system }}:{{ fleet.origin.planet }}]</p>
+                            
+                            <h6>{{ LNG.mission_destination }}</h6>
+                            <p>{{ fleet.target.name }} [{{ fleet.target.galaxy }}:{{ fleet.target.system }}:{{ fleet.target.planet }}]</p>
+                            
+                            <h6>{{ LNG.mission_time }}</h6>
+                            <p>{{ LNG.mission_arrival }}: {{ fleet.arrivalTime|time }}</p>
+                            <p>{{ LNG.mission_return }}: {{ fleet.returnTime|time }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>{{ LNG.mission_resources }}</h6>
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td>{{ LNG.tech.901 }}:</td>
+                                        <td>{{ fleet.resources.metal|number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ LNG.tech.902 }}:</td>
+                                        <td>{{ fleet.resources.crystal|number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ LNG.tech.903 }}:</td>
+                                        <td>{{ fleet.resources.deuterium|number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ LNG.tech.921 }}:</td>
+                                        <td>{{ fleet.resources.darkmatter|number }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <button class="btn btn-secondary" onclick="window.history.back()">{{ LNG.mission_back }}</button>
+                    <button class="btn btn-primary" id="continueButton" disabled>{{ LNG.mission_continue }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function setMission(missionID) {
+        // Highlight selected mission
+        $('.mission-card').removeClass('border-primary');
+        $('.mission-card').eq(missionID - 1).addClass('border-primary');
+        
+        // Enable continue button
+        $('#continueButton').prop('disabled', false);
+        
+        // Set mission in form
+        $('#mission').val(missionID);
+    }
+    
+    $('#continueButton').click(function() {
+        $('#missionForm').submit();
+    });
+</script>
+
+<form id="missionForm" method="post" action="game.php?page=fleet3">
+    <input type="hidden" id="mission" name="mission" value="0">
+    <input type="hidden" name="token" value="{{ token }}">
+</form>
+{% endblock %}

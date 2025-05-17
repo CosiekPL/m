@@ -1,0 +1,248 @@
+{% extends 'game_layout.twig' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ LNG.lv_imperium_title }}</h5>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleAll">{{ LNG.lv_expand_all }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleResources">{{ LNG.lv_resources }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleBuildings">{{ LNG.lv_buildings }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleTechnologies">{{ LNG.lv_technology }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleFleet">{{ LNG.lv_fleet }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleDefense">{{ LNG.lv_defense }}</button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>{{ LNG.lv_planet }}</th>
+                                    {% for planetID, planet in planets %}
+                                    <th class="text-center">
+                                        <a href="game.php?page=overview&amp;cp={{ planet.id }}" title="{{ planet.name }} [{{ planet.galaxy }}:{{ planet.system }}:{{ planet.planet }}]">
+                                            <img src="{{ dpath }}planeten/small/s_{{ planet.image }}.jpg" class="rounded" width="50" height="50" alt="{{ planet.name }}">
+                                        </a>
+                                        <br>
+                                        <span class="small">{{ planet.name }}</span>
+                                        <br>
+                                        <span class="small">[{{ planet.galaxy }}:{{ planet.system }}:{{ planet.planet }}]</span>
+                                        <br>
+                                        <span class="small">{{ planet.field_current }}/{{ planet.field_max }} {{ LNG.lv_fields }}</span>
+                                    </th>
+                                    {% endfor %}
+                                    <th class="text-center bg-light">{{ LNG.lv_total }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Resources Section -->
+                                <tr class="table-primary">
+                                    <th colspan="{{ planets|length + 2 }}" class="text-start">
+                                        <button class="btn btn-link text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#resourcesCollapse">
+                                            <i class="fas fa-plus-circle me-2"></i>{{ LNG.lv_resources }}
+                                        </button>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td colspan="{{ planets|length + 2 }}">
+                                        <div class="collapse show" id="resourcesCollapse">
+                                            <table class="table table-sm mb-0">
+                                                {% for resourceID, resourceName in resourcesList %}
+                                                <tr>
+                                                    <td style="width:10%">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ dpath }}images/{{ resourceID }}.gif" width="20" height="20" alt="{{ LNG.tech[resourceID] }}" class="me-2">
+                                                            {{ LNG.tech[resourceID] }}
+                                                        </div>
+                                                    </td>
+                                                    {% for planetID, planet in planets %}
+                                                    <td class="text-end">{{ planet.resource[resourceID]|number_format(0, ',', '.') }}</td>
+                                                    {% endfor %}
+                                                    <td class="text-end bg-light fw-bold">{{ resourceTotal[resourceID]|number_format(0, ',', '.') }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                                <tr class="table-secondary">
+                                                    <td>{{ LNG.lv_resources_per_hour }}</td>
+                                                    {% for planetID, planet in planets %}
+                                                    <td class="text-end">{{ planet.production|number_format(0, ',', '.') }}</td>
+                                                    {% endfor %}
+                                                    <td class="text-end bg-light fw-bold">{{ productionTotal|number_format(0, ',', '.') }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Buildings Section -->
+                                <tr class="table-info">
+                                    <th colspan="{{ planets|length + 2 }}" class="text-start">
+                                        <button class="btn btn-link text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#buildingsCollapse">
+                                            <i class="fas fa-plus-circle me-2"></i>{{ LNG.lv_buildings }}
+                                        </button>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td colspan="{{ planets|length + 2 }}">
+                                        <div class="collapse" id="buildingsCollapse">
+                                            <table class="table table-sm mb-0">
+                                                {% for buildingID, buildingName in buildingsList %}
+                                                <tr>
+                                                    <td style="width:10%">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ dpath }}gebaeude/{{ buildingID }}.gif" width="20" height="20" alt="{{ LNG.tech[buildingID] }}" class="me-2">
+                                                            {{ LNG.tech[buildingID] }}
+                                                        </div>
+                                                    </td>
+                                                    {% for planetID, planet in planets %}
+                                                    <td class="text-end">{{ planet.building[buildingID]|default(0) }}</td>
+                                                    {% endfor %}
+                                                    <td class="text-end bg-light fw-bold">{{ buildingTotal[buildingID]|default(0) }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Technologies Section -->
+                                <tr class="table-success">
+                                    <th colspan="{{ planets|length + 2 }}" class="text-start">
+                                        <button class="btn btn-link text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#techCollapse">
+                                            <i class="fas fa-plus-circle me-2"></i>{{ LNG.lv_technology }}
+                                        </button>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td colspan="{{ planets|length + 2 }}">
+                                        <div class="collapse" id="techCollapse">
+                                            <table class="table table-sm mb-0">
+                                                {% for techID, techName in techsList %}
+                                                <tr>
+                                                    <td style="width:10%">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ dpath }}forschung/{{ techID }}.gif" width="20" height="20" alt="{{ LNG.tech[techID] }}" class="me-2">
+                                                            {{ LNG.tech[techID] }}
+                                                        </div>
+                                                    </td>
+                                                    {% for planetID, planet in planets %}
+                                                    <td class="text-end">{{ techLevel[techID]|default(0) }}</td>
+                                                    {% endfor %}
+                                                    <td class="text-end bg-light fw-bold">{{ techLevel[techID]|default(0) }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Fleet Section -->
+                                <tr class="table-warning">
+                                    <th colspan="{{ planets|length + 2 }}" class="text-start">
+                                        <button class="btn btn-link text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#fleetCollapse">
+                                            <i class="fas fa-plus-circle me-2"></i>{{ LNG.lv_fleet }}
+                                        </button>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td colspan="{{ planets|length + 2 }}">
+                                        <div class="collapse" id="fleetCollapse">
+                                            <table class="table table-sm mb-0">
+                                                {% for fleetID, fleetName in fleetsList %}
+                                                <tr>
+                                                    <td style="width:10%">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ dpath }}gebaeude/{{ fleetID }}.gif" width="20" height="20" alt="{{ LNG.tech[fleetID] }}" class="me-2">
+                                                            {{ LNG.tech[fleetID] }}
+                                                        </div>
+                                                    </td>
+                                                    {% for planetID, planet in planets %}
+                                                    <td class="text-end">{{ planet.fleet[fleetID]|default(0)|number_format(0, ',', '.') }}</td>
+                                                    {% endfor %}
+                                                    <td class="text-end bg-light fw-bold">{{ fleetTotal[fleetID]|default(0)|number_format(0, ',', '.') }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Defense Section -->
+                                <tr class="table-danger">
+                                    <th colspan="{{ planets|length + 2 }}" class="text-start">
+                                        <button class="btn btn-link text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#defenseCollapse">
+                                            <i class="fas fa-plus-circle me-2"></i>{{ LNG.lv_defense }}
+                                        </button>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td colspan="{{ planets|length + 2 }}">
+                                        <div class="collapse" id="defenseCollapse">
+                                            <table class="table table-sm mb-0">
+                                                {% for defenseID, defenseName in defensesList %}
+                                                <tr>
+                                                    <td style="width:10%">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ dpath }}gebaeude/{{ defenseID }}.gif" width="20" height="20" alt="{{ LNG.tech[defenseID] }}" class="me-2">
+                                                            {{ LNG.tech[defenseID] }}
+                                                        </div>
+                                                    </td>
+                                                    {% for planetID, planet in planets %}
+                                                    <td class="text-end">{{ planet.defense[defenseID]|default(0)|number_format(0, ',', '.') }}</td>
+                                                    {% endfor %}
+                                                    <td class="text-end bg-light fw-bold">{{ defenseTotal[defenseID]|default(0)|number_format(0, ',', '.') }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    let allExpanded = false;
+    
+    $('#toggleAll').click(function() {
+        if (allExpanded) {
+            $('.collapse').collapse('hide');
+            $(this).text('{{ LNG.lv_expand_all }}');
+        } else {
+            $('.collapse').collapse('show');
+            $(this).text('{{ LNG.lv_collapse_all }}');
+        }
+        allExpanded = !allExpanded;
+    });
+    
+    $('#toggleResources').click(function() {
+        $('#resourcesCollapse').collapse('toggle');
+    });
+    
+    $('#toggleBuildings').click(function() {
+        $('#buildingsCollapse').collapse('toggle');
+    });
+    
+    $('#toggleTechnologies').click(function() {
+        $('#techCollapse').collapse('toggle');
+    });
+    
+    $('#toggleFleet').click(function() {
+        $('#fleetCollapse').collapse('toggle');
+    });
+    
+    $('#toggleDefense').click(function() {
+        $('#defenseCollapse').collapse('toggle');
+    });
+});
+</script>
+{% endblock %}

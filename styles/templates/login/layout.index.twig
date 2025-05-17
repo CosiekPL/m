@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ servername }} - {{ serverinfo }}</title>
+    <meta name="keywords" content="{{ gameInformation.keywords|raw }}">
+    <meta name="description" content="{{ servername }} {{ gameInformation.description|raw }}">
+    
+    <link rel="stylesheet" type="text/css" href="styles/resource/css/login/main.css?v={{ REV }}">
+    <link rel="stylesheet" type="text/css" href="styles/resource/css/base/jquery.fancybox.css?v={{ REV }}">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    
+    <script type="text/javascript">
+        var ServerTimezoneOffset = {{ Offset }};
+        var serverTime = new Date({{ date[0] }}, {{ date[1] - 1 }}, {{ date[2] }}, {{ date[3] }}, {{ date[4] }}, {{ date[5] }});
+        var startTime = serverTime.getTime();
+        var localTime = serverTime;
+        var localTS = startTime;
+        var Gameurl = "{{ GAMEURL }}";
+        var Ready = "{{ LNG.ready }}";
+        var Skin = "{{ SKIN }}";
+        var Lang = "{{ lang }}";
+    </script>
+    
+    <script type="text/javascript" src="scripts/base/jquery.js?v={{ REV }}"></script>
+    <script type="text/javascript" src="scripts/base/jquery.ui.js?v={{ REV }}"></script>
+    <script type="text/javascript" src="scripts/base/jquery.cookie.js?v={{ REV }}"></script>
+    <script type="text/javascript" src="scripts/base/jquery.fancybox.js?v={{ REV }}"></script>
+    <script type="text/javascript" src="scripts/login/main.js?v={{ REV }}"></script>
+    <script type="text/javascript" src="scripts/base/time.js?v={{ REV }}"></script>
+</head>
+<body id="{{ bodyClass }}">
+    <div id="page">
+        <header>
+            <nav>
+                <ul id="menu">
+                    <li>
+                        <a href="index.php">{{ LNG.menu_index }}</a>
+                    </li>
+                    <li>
+                        <a href="index.php?page=board">{{ LNG.forum }}</a>
+                    </li>
+                    <li>
+                        <a href="index.php?page=news">{{ LNG.menu_news }}</a>
+                    </li>
+                    <li>
+                        <a href="index.php?page=rules">{{ LNG.menu_rules }}</a>
+                    </li>
+                    <li>
+                        <a href="index.php?page=battleHall">{{ LNG.menu_battlehall }}</a>
+                    </li>
+                    <li>
+                        <a href="index.php?page=banList">{{ LNG.menu_banlist }}</a>
+                    </li>
+                    <li>
+                        <a href="index.php?page=disclamer">{{ LNG.menu_disclamer }}</a>
+                    </li>
+                </ul>
+            </nav>
+            <div id="login_box">
+                <form id="login" name="login" action="index.php?page=login" data-action="index.php?page=login" method="post">
+                    <div class="input_box">
+                        <label for="universe">{{ LNG.universe }}</label>
+                        <select name="uni" id="universe" class="changeAction">
+                            {% for uniID, uniName in universeSelect %}
+                                <option value="{{ uniID }}" {% if uniID == UNI %}selected{% endif %}>{{ uniName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="input_box">
+                        <label for="username">{{ LNG.loginUsername }}</label>
+                        <input name="username" id="username" type="text">
+                    </div>
+                    <div class="input_box">
+                        <label for="password">{{ LNG.loginPassword }}</label>
+                        <input name="password" id="password" type="password">
+                    </div>
+                    <div class="input_box">
+                        <input type="submit" class="submit" value="{{ LNG.loginButton }}">
+                    </div>
+                </form>
+                <div id="lang_box">
+                    <div class="lang_select">
+                        {% for langKey, langName in languageSelector %}
+                            <a href="?lang={{ langKey }}">
+                                <img src="styles/resource/images/login/flags/{{ langKey }}.png" alt="{{ langName }}" title="{{ langName }}">
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </header>
+        {% block content %}{% endblock %}
+        <footer>
+            <p>{{ serverName }} &copy; {{ date[0] }}</p>
+            <p>{{ LNG.login_footer }}</p>
+        </footer>
+    </div>
+</body>
+</html>

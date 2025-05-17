@@ -1,0 +1,35 @@
+{% extends 'game_layout.twig' %}
+
+{% block title %}{{ LNG.fcm_info }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ LNG.fcm_info }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tr>
+                                <td>
+                                    <p>{{ message }}</p>
+                                    {% if redirectButtons is not empty %}
+                                    <p>
+                                        {% for button in redirectButtons %}
+                                        <a href="{{ button.url }}" class="btn btn-primary btn-sm">{{ button.label }}</a>
+                                        {% endfor %}
+                                    </p>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

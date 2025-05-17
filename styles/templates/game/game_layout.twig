@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ game_name }} - {{ uni_name }}</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ dpath }}css/main.css?v={{ REV }}">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    
+    <script type="text/javascript">
+        var ServerTimezoneOffset = {{ Offset }};
+        var serverTime = new Date({{ date[0] }}, {{ date[1] - 1 }}, {{ date[2] }}, {{ date[3] }}, {{ date[4] }}, {{ date[5] }});
+        var startTime = serverTime.getTime();
+        var localTime = serverTime;
+        var localTS = startTime;
+        var Gameurl = "{{ HTTP_ROOT }}";
+        var Ready = "{{ LNG.ready }}";
+        var Skin = "{{ dpath }}";
+        var Lang = "{{ lang }}";
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="scripts/base/jquery.js?v={{ REV }}"></script>
+    <script type="text/javascript" src="scripts/base/jquery.ui.js?v={{ REV }}"></script>
+    <script type="text/javascript" src="scripts/game/main.js?v={{ REV }}"></script>
+    <script type="text/javascript" src="scripts/base/time.js?v={{ REV }}"></script>
+    
+    {% for scriptName in scripts %}
+    <script type="text/javascript" src="scripts/{{ scriptName }}.js?v={{ REV }}"></script>
+    {% endfor %}
+    
+    {{ execscript|raw }}
+</head>
+<body id="{{ bodyclass }}">
+    <div id="page">
+        <header class="bg-dark text-white py-2">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h5 mb-0">{{ game_name }}</h1>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <span class="server-time">{{ 'now'|date('H:i:s') }}</span>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                {{ LNG.top_menu }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="game.php?page=overview">{{ LNG.lm_overview }}</a></li>
+                                <li><a class="dropdown-item" href="game.php?page=settings">{{ LNG.lm_options }}</a></li>
+                                <li><a class="dropdown-item" href="game.php?page=messages">{{ LNG.lm_messages }} {% if messageCount > 0 %}<span class="badge bg-danger">{{ messageCount }}</span>{% endif %}</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="game.php?page=logout">{{ LNG.lm_logout }}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <nav class="bg-light">
+            <div class="container">
+                <div class="row py-2">
+                    <div class="col-md-8">
+                        <div class="d-flex flex-wrap">
+                            {% for menuItem in PlanetMenu %}
+                            <div class="dropdown me-2 mb-2">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    {{ menuItem.name }}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% for subItem in menuItem.sub %}
+                                    {% if subItem.header is defined %}
+                                    <li><h6 class="dropdown-header">{{ subItem.header }}</h6></li>
+                                    {% else %}
+                                    <li><a class="dropdown-item" href="{{ subItem.href }}" {% if subItem.target is defined %}target="{{ subItem.target }}"{% endif %}>{{ subItem.name }}</a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-end">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    {{ PLANET_NAME }} [{{ PLANET_GALAXY }}:{{ PLANET_SYSTEM }}:{{ PLANET_PLANET }}]
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="game.php?page=overview">{{ LNG.lm_overview }}</a></li>
+                                    <li><a class="dropdown-item" href="game.php?page=resources">{{ LNG.lm_resources }}</a></li>
+                                    <li><a class="dropdown-item" href="game.php?page=buildings">{{ LNG.lm_buildings }}</a></li>
+                                    <li><a class="dropdown-item" href="game.php?page=fleetTable">{{ LNG.lm_fleet }}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <div id="resources" class="bg-light border-bottom">
+            <div class="container">
+                <div class="row py-2">
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ dpath }}images/metal.gif" alt="{{ LNG.tech.901 }}" class="me-2" width="24">
+                            <div>
+                                <div class="small">{{ LNG.tech.901 }}</div>
+                                <div class="fw-bold">{{ METAL }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ dpath }}images/crystal.gif" alt="{{ LNG.tech.902 }}" class="me-2" width="24">
+                            <div>
+                                <div class="small">{{ LNG.tech.902 }}</div>
+                                <div class="fw-bold">{{ CRYSTAL }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ dpath }}images/deuterium.gif" alt="{{ LNG.tech.903 }}" class="me-2" width="24">
+                            <div>
+                                <div class="small">{{ LNG.tech.903 }}</div>
+                                <div class="fw-bold">{{ DEUTERIUM }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ dpath }}images/energy.gif" alt="{{ LNG.tech.911 }}" class="me-2" width="24">
+                            <div>
+                                <div class="small">{{ LNG.tech.911 }}</div>
+                                <div class="fw-bold">{{ ENERGY }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <main class="py-4">
+            {% block content %}{% endblock %}
+        </main>
+        
+        <footer class="bg-dark text-white py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-0">{{ game_name }} &copy; 2009-{{ date[0] }}</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="mb-0">
+                            <a href="index.php?page=disclamer" class="text-white">{{ LNG.menu_disclamer }}</a> | 
+                            Ping: {{ pingTime }} ms
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="{{ userLanguage|default('pl') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ pageTitle|default('2Moons') }} - {{ gameName }}</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ dpath }}css/main.css">
+    {% if cssFiles is defined %}
+        {% for cssFile in cssFiles %}
+        <link rel="stylesheet" href="{{ cssFile }}">
+        {% endfor %}
+    {% endif %}
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ dpath }}js/main.js"></script>
+    {% if jsFiles is defined %}
+        {% for jsFile in jsFiles %}
+        <script src="{{ jsFile }}"></script>
+        {% endfor %}
+    {% endif %}
+    
+    <script type="text/javascript">
+        var ServerTimezoneOffset = {{ serverTimezoneOffset }};
+        var serverTime = new Date({{ serverTime }} * 1000);
+        var startTime = new Date();
+        var localTime = startTime.getTime();
+        var localTimezoneOffset = startTime.getTimezoneOffset() * 60000;
+        var Gamename = "{{ gameName }}";
+        var Ready = "{{ LNG.ready }}";
+        var Skin = "{{ dpath }}";
+        var Lang = "{{ userLanguage }}";
+        var head_info = "{{ LNG.fcm_info }}";
+        var auth = "{{ session_id }}";
+    </script>
+</head>
+<body>
+    <!-- Nagłówek -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="game.php?page=overview">{{ gameName }}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ LNG.lm_overview }}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="game.php?page=overview">{{ LNG.lm_overview }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=empire">{{ LNG.lm_empire }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=statistics">{{ LNG.lm_statistics }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=achievements">{{ LNG.lm_achievements }}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ LNG.lm_resources }}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="game.php?page=resources">{{ LNG.lm_resources }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=buildings">{{ LNG.lm_buildings }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=research">{{ LNG.lm_research }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=shipyard">{{ LNG.lm_shipyard }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=defense">{{ LNG.lm_defenses }}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ LNG.lm_fleet }}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="game.php?page=fleet">{{ LNG.lm_fleet }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=fleetTable">{{ LNG.lm_fleet_send }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=galaxy">{{ LNG.lm_galaxy }}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ LNG.lm_community }}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="game.php?page=alliance">{{ LNG.lm_alliance }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=messages">{{ LNG.lm_messages }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=chat">{{ LNG.lm_chat }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=buddyList">{{ LNG.lm_buddylist }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=notes">{{ LNG.lm_notes }}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ LNG.lm_account }}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="game.php?page=settings">{{ LNG.lm_options }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=profile">{{ LNG.lm_profile }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=support">{{ LNG.lm_support }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=tutorial">{{ LNG.lm_tutorial }}</a></li>
+                            <li><a class="dropdown-item" href="game.php?page=logout">{{ LNG.lm_logout }}</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <div class="navbar-text text-light">
+                    <div id="servertime"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Zasoby -->
+    <div class="container-fluid py-3 bg-light">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="d-flex justify-content-between">
+                    <div class="me-2">
+                        <span class="fw-bold">{{ LNG.tech[901] }}</span><br>
+                        <span id="current_metal">{{ resources.metal|number_format(0, ',', '.') }}</span>
+                    </div>
+                    <div class="me-2">
+                        <span class="fw-bold">{{ LNG.tech[902] }}</span><br>
+                        <span id="current_crystal">{{ resources.crystal|number_format(0, ',', '.') }}</span>
+                    </div>
+                    <div class="me-2">
+                        <span class="fw-bold">{{ LNG.tech[903] }}</span><br>
+                        <span id="current_deuterium">{{ resources.deuterium|number_format(0, ',', '.') }}</span>
+                    </div>
+                    <div class="me-2">
+                        <span class="fw-bold">{{ LNG.tech[911] }}</span><br>
+                        <span id="current_energy">{{ resources.energy|number_format(0, ',', '.') }}</span>
+                    </div>
+                    <div>
+                        <span class="fw-bold">{{ LNG.tech[921] }}</span><br>
+                        <span id="current_darkmatter">{{ resources.darkmatter|number_format(0, ',', '.') }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 text-end">
+                <div class="mb-1">
+                    <span class="fw-bold">{{ LNG.ov_planet }}</span>:
+                    <a href="game.php?page=overview" class="text-decoration-none">{{ planetName }}</a>
+                </div>
+                <div class="small">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            {{ LNG.ov_switch_planet }}
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for planetID, planetInfo in planetList %}
+                            <li>
+                                <a class="dropdown-item {% if planetInfo.id == currentPlanet.id %}active{% endif %}" href="game.php?page={{ pageType }}&cp={{ planetInfo.id }}">
+                                    {{ planetInfo.name }} [{{ planetInfo.galaxy }}:{{ planetInfo.system }}:{{ planetInfo.planet }}]
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Zawartość strony -->
+    <main class="py-4">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Stopka -->
+    <footer class="mt-4 py-3 bg-dark text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 small">
+                    <div>{{ pageGenerateTime }} {{ LNG.footer_seconds }}</div>
+                    <div>{{ LNG.footer_query }}: {{ databaseQueryCount }}</div>
+                </div>
+                <div class="col-md-6 text-end small">
+                    <div>2Moons &copy; 2009-{{ "now"|date("Y") }}</div>
+                    <div>
+                        <a href="index.php?page=disclamer" class="text-white">{{ LNG.menu_disclamer }}</a> |
+                        <a href="index.php?page=rules" class="text-white">{{ LNG.menu_rules }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Skrypty -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Aktualizacja zasobów co 2 sekundy
+            setInterval(function() {
+                $.getJSON('game.php?page=ajax&action=resources', function(data) {
+                    $('#current_metal').text(data.metal);
+                    $('#current_crystal').text(data.crystal);
+                    $('#current_deuterium').text(data.deuterium);
+                    $('#current_energy').text(data.energy);
+                    $('#current_darkmatter').text(data.darkmatter);
+                });
+            }, 2000);
+            
+            // Aktualizacja czasu serwera
+            setInterval(function() {
+                serverTime.setSeconds(serverTime.getSeconds() + 1);
+                var hours = serverTime.getHours();
+                var minutes = serverTime.getMinutes();
+                var seconds = serverTime.getSeconds();
+                
+                if (hours < 10) hours = "0" + hours;
+                if (minutes < 10) minutes = "0" + minutes;
+                if (seconds < 10) seconds = "0" + seconds;
+                
+                $('#servertime').text(hours + ":" + minutes + ":" + seconds);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
