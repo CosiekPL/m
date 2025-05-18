@@ -1,7 +1,4 @@
 <?php
-
-
-
 define('MODE', 'ADMIN');
 define('DATABASE_VERSION', 'OLD');
 

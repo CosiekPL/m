@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 class ShowChangelogPage extends AbstractGamePage
 {
 	public static $requireModule = 0;

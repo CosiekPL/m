@@ -1,7 +1,4 @@
 <?php
-
-
-
 require_once 'includes/pages/game/ShowPhalanxPage.class.php';
 
 class GalaxyRows

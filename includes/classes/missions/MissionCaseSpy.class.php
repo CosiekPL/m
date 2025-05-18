@@ -1,7 +1,5 @@
 <?php
 
-
-
 class MissionCaseSpy extends MissionFunctions implements Mission
 {
 		

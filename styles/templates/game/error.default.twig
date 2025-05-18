@@ -1,32 +1,42 @@
-{% extends 'game_layout.twig' %}
-
-{% block title %}{{ LNG.fcm_info }}{% endblock %}
+{% extends "layout.universe.twig" %}
 
 {% block content %}
-<div class="container">
+<div class="container mt-5">
     <div class="row">
-        <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ LNG.fcm_info }}</h5>
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">{{ LNG.sys_error }}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <td>
-                                    <p>{{ message }}</p>
-                                    {% if redirectButtons is not empty %}
-                                    <p>
-                                        {% for button in redirectButtons %}
-                                        <a href="{{ button.url }}" class="btn btn-primary btn-sm">{{ button.label }}</a>
-                                        {% endfor %}
-                                    </p>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        </table>
+                    <p class="lead">{{ message|raw }}</p>
+                    
+                    {% if redirectButtons %}
+                    <div class="d-flex justify-content-center mt-4">
+                        {% for key, button in redirectButtons %}
+                        <a href="{{ button.url }}" class="btn btn-primary mx-2">{{ button.label }}</a>
+                        {% endfor %}
                     </div>
+                    {% endif %}
+                    
+                    {% if goto %}
+                    <div class="text-center mt-4">
+                        <p>{{ LNG.sys_forward }} <span id="seconds">{{ gotoinsec }}</span> {{ LNG.sys_second }}</p>
+                        <script type="text/javascript">
+                            var seconds = {{ gotoinsec }};
+                            function countdown() {
+                                seconds--;
+                                if (seconds <= 0) {
+                                    location.href = "{{ goto }}";
+                                } else {
+                                    document.getElementById("seconds").innerHTML = seconds;
+                                    window.setTimeout("countdown()", 1000);
+                                }
+                            }
+                            countdown();
+                        </script>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

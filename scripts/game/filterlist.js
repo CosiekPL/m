@@ -1,28 +1,81 @@
-/*==================================================*
- $Id: filterlist.js 131 2012-03-04 13:01:20Z slaver7 $
- Copyright 2003 Patrick Fitzgerald
- http://www.barelyfitz.com/webdesign/articles/filterlist/
+class FilterList {
+    constructor(selectElement) {
+        // Konstruktor klasy FilterList, przyjmuje element select jako argument.
+        this.selectElement = selectElement; // Przypisuje przekazany element select do właściwości klasy.
+        this.flags = 'i'; // Domyślne flagi dla wyrażenia regularnego ('i' oznacza ignorowanie wielkości liter).
+        this.matchText = true; // Flaga określająca, czy dopasowywać do tekstu opcji.
+        this.matchValue = false; // Flaga określająca, czy dopasowywać do wartości opcji.
+        this.showDebug = false; // Flaga określająca, czy wyświetlać komunikaty debugowania.
+        this.optionsCopy = []; // Tablica do przechowywania kopii oryginalnych opcji elementu select.
+        this.init(); // Wywołuje metodę inicjalizującą po utworzeniu obiektu.
+    }
 
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+    init() {
+        // Metoda inicjalizująca, tworzy kopię oryginalnych opcji elementu select.
+        if (!this.selectElement || !this.selectElement.options) {
+            this.debug('Element select lub jego opcje nie są zdefiniowane.');
+            return;
+        }
+        for (const option of this.selectElement.options) {
+            // Iteruje po wszystkich opcjach elementu select.
+            const newOption = new Option(option.text, option.value || option.text);
+            // Tworzy nową opcję z tekstem i wartością (jeśli wartość nie istnieje, używa tekstu).
+            this.optionsCopy.push(newOption); // Dodaje skopiowaną opcję do tablicy.
+        }
+    }
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+    reset() {
+        // Metoda resetująca filtr, przywracająca wszystkie oryginalne opcje.
+        this.set(''); // Wywołuje metodę 'set' z pustym wzorcem, co powoduje wyświetlenie wszystkich opcji.
+    }
 
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *==================================================*/
-function filterlist(selectobj){this.selectobj=selectobj;this.flags='i';this.match_text=true;this.match_value=false;this.show_debug=false;this.init=function(){if(!this.selectobj)return this.debug('selectobj not defined');if(!this.selectobj.options)return this.debug('selectobj.options not defined');this.optionscopy=new Array();if(this.selectobj&&this.selectobj.options){for(var i=0;i<this.selectobj.options.length;i++){this.optionscopy[i]=new Option();this.optionscopy[i].text=selectobj.options[i].text;if(selectobj.options[i].value){this.optionscopy[i].value=selectobj.options[i].value;}else{this.optionscopy[i].value=selectobj.options[i].text;}}}}
-this.reset=function(){this.set('');}
-this.set=function(pattern){var loop=0,index=0,regexp,e;if(!this.selectobj)return this.debug('selectobj not defined');if(!this.selectobj.options)return this.debug('selectobj.options not defined');this.selectobj.options.length=0;try{regexp=new RegExp(pattern,this.flags);}catch(e){if(typeof this.hook=='function'){this.hook();}
-return;}
-for(loop=0;loop<this.optionscopy.length;loop++){var option=this.optionscopy[loop];if((this.match_text&&regexp.test(option.text))||(this.match_value&&regexp.test(option.value))){this.selectobj.options[index++]=new Option(option.text,option.value,false);}}
-if(typeof this.hook=='function'){this.hook();}}
-this.set_ignore_case=function(value){if(value){this.flags='i';}else{this.flags='';}}
-this.debug=function(msg){if(this.show_debug){alert('FilterList: '+msg);}}
-this.init();}
+    set(pattern) {
+        // Metoda ustawiająca wzorzec filtrowania i aktualizująca wyświetlane opcje.
+        if (!this.selectElement || !this.selectElement.options) {
+            this.debug('Element select lub jego opcje nie są zdefiniowane.');
+            return;
+        }
+        this.selectElement.options.length = 0; // Czyści aktualnie wyświetlane opcje w elemencie select.
+        try {
+            const regexp = new RegExp(pattern, this.flags); // Tworzy obiekt wyrażenia regularnego na podstawie podanego wzorca i flag.
+            let index = 0; // Indeks do śledzenia dodawanych opcji.
+            for (const option of this.optionsCopy) {
+                // Iteruje po kopii oryginalnych opcji.
+                const textMatch = this.matchText && regexp.test(option.text); // Sprawdza, czy tekst opcji pasuje do wzorca (jeśli flaga matchText jest ustawiona).
+                const valueMatch = this.matchValue && regexp.test(option.value); // Sprawdza, czy wartość opcji pasuje do wzorca (jeśli flaga matchValue jest ustawiona).
+                if (textMatch || valueMatch) {
+                    // Jeśli tekst lub wartość opcji pasuje do wzorca.
+                    this.selectElement.options[index++] = new Option(option.text, option.value, false, false);
+                    // Tworzy nową opcję w elemencie select z pasującym tekstem i wartością.
+                }
+            }
+            if (typeof this.hook === 'function') {
+                this.hook(); // Wywołuje opcjonalną funkcję hook (jeśli jest zdefiniowana).
+            }
+        } catch (error) {
+            // Obsługuje błąd, który może wystąpić, jeśli podany wzorzec nie jest prawidłowym wyrażeniem regularnym.
+            this.debug(`Nieprawidłowy wzorzec wyrażenia regularnego: ${pattern} - ${error.message}`);
+            if (typeof this.hook === 'function') {
+                this.hook(); // Wywołuje opcjonalną funkcję hook również w przypadku błędu.
+            }
+        }
+    }
+
+    setIgnoreCase(value) {
+        // Metoda ustawiająca flagę ignorowania wielkości liter w wyrażeniu regularnym.
+        this.flags = value ? 'i' : ''; // Jeśli 'value' jest prawdą, ustawia flagę 'i', w przeciwnym razie ustawia pusty ciąg (uwzględniaj wielkość liter).
+    }
+
+    debug(message) {
+        // Metoda wyświetlająca komunikat debugowania, jeśli właściwość showDebug jest ustawiona na true.
+        if (this.showDebug) {
+            alert(`FilterList: ${message}`);
+        }
+    }
+}
+
+
+// const myFilter = new FilterList(document.getElementById('mySelect')); // Tworzy nową instancję klasy FilterList, przekazując element select.
+// myFilter.set('szukany tekst'); // Ustawia wzorzec filtrowania.
+// myFilter.setIgnoreCase(true); // Ustawia ignorowanie wielkości liter.
+// myFilter.reset(); // Resetuje filtr, wyświetlając wszystkie opcje.

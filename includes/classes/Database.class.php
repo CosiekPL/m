@@ -1,6 +1,4 @@
 <?php
-
-
 class Database
 {
 	protected $dbHandle = NULL;

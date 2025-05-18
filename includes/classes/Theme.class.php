@@ -31,7 +31,7 @@ class Theme
     /**
      * Domyślny motyw
      */
-    private const DEFAULT_THEME = 'galaxy';
+    private const DEFAULT_THEME = 'star';
     
     /**
      * Konstruktor - inicjalizuje motyw
@@ -115,7 +115,7 @@ class Theme
                         $themeName = $fileInfo->getFilename();
                         
                         // Wczytanie opisu motywu
-                        $configFile = $themeDir . $themeName . '/theme.config.php';
+                        $configFile = $themeDir . $themeName . '/style.cfg';
                         if (file_exists($configFile)) {
                             include $configFile;
                             if (isset($themeName, $themeDesc)) {
@@ -145,7 +145,7 @@ class Theme
      */
     private function loadThemeConfig(): void
     {
-        $configFile = ROOT_PATH . 'styles/themes/' . $this->themeName . '/theme.config.php';
+        $configFile = ROOT_PATH . 'styles/themes/' . $this->themeName . '/style.cfg';
         
         // Domyślna konfiguracja
         $this->config = [

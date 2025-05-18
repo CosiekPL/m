@@ -1,7 +1,4 @@
 <?php
-
-
-
 class ShowBattleSimulatorPage extends AbstractGamePage
 {
 	public static $requireModule = MODULE_SIMULATOR;

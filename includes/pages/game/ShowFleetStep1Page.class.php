@@ -1,7 +1,4 @@
 <?php
-
-
-
 class ShowFleetStep1Page extends AbstractGamePage
 {
 	public static $requireModule = MODULE_FLEET_TABLE;

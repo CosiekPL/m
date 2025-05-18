@@ -1,7 +1,4 @@
 <?php
-
-
-
 class ShowChatPage extends AbstractGamePage
 {
 	public static $requireModule = MODULE_CHAT;

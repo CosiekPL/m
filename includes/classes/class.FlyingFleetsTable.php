@@ -1,7 +1,4 @@
 <?php
-
-
-
 class FlyingFleetsTable
 {
 	protected $Mode = null;

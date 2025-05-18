@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 class ShowBoardPage extends AbstractGamePage
 {
 	public static $requireModule = 0;

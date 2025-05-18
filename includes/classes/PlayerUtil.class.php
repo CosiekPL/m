@@ -1,13 +1,9 @@
 <?php
-
-
-
 class PlayerUtil
 {
 	static public function cryptPassword($password)
 	{
 		$salt = NULL;
-		// @see: http://www.phpgangsta.de/schoener-hashen-mit-bcrypt
 		require 'includes/config.php';
 		
 		if(!CRYPT_BLOWFISH || is_null($salt)) {
@@ -569,13 +565,11 @@ class PlayerUtil
 			$planetPerBonus = 999;
 		}
 		
-		// http://owiki.de/index.php/Astrophysik#.C3.9Cbersicht
 		return (int) ceil($config->min_player_planets + min($planetPerTech, $USER[$resource[124]] * $config->planets_per_tech) + min($planetPerBonus, $USER['factor']['Planets']));
 	}
 
 	static public function allowPlanetPosition($position, $USER)
 	{
-		// http://owiki.de/index.php/Astrophysik#.C3.9Cbersicht
 
 		global $resource;
 		$config	= Config::get($USER['universe']);

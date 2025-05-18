@@ -1,20 +1,3 @@
-/**
- * 2Moons
- * by Jan-Otto Kröpke and Danter14 2009-2018
- *
- * For the full copyright and license information, please view the LICENSE
- *
- * @package 2Moons
- * @author Jan-Otto Kröpke <slaver7@gmail.com>
- * @copyright 2009 Lucky
- * @copyright 2016 Jan-Otto Kröpke <slaver7@gmail.com>
- * @copyright 2018 Danter14 <danter14000@gmail.com>
- * @licence MIT
- * @version 1.8.0
- * @link https://github.com/jkroepke/2Moons
- */
-
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -158,22 +141,22 @@ CREATE TABLE `%PREFIX%config` (
   `VERSION` varchar(8) NOT NULL,
   `sql_revision` INT NOT NULL DEFAULT  '0',
   `users_amount` int(11) unsigned NOT NULL DEFAULT '1',
-  `game_speed` double(255,0) unsigned NOT NULL DEFAULT '2500',
-  `fleet_speed` double(255,0) unsigned NOT NULL DEFAULT '2500',
-  `resource_multiplier` double(255,0) unsigned NOT NULL DEFAULT '1',
-  `storage_multiplier` double(255,0) unsigned NOT NULL DEFAULT '1',
+  `game_speed` double(255,0) unsigned NOT NULL DEFAULT '12500',
+  `fleet_speed` double(255,0) unsigned NOT NULL DEFAULT '8000',
+  `resource_multiplier` double(255,0) unsigned NOT NULL DEFAULT '10',
+  `storage_multiplier` double(255,0) unsigned NOT NULL DEFAULT '5',
   `message_delete_behavior` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `message_delete_days` tinyint(3) unsigned NOT NULL DEFAULT '7',
   `halt_speed` smallint(5) unsigned NOT NULL DEFAULT '1',
-  `Fleet_Cdr` tinyint(3) unsigned NOT NULL DEFAULT '30',
-  `Defs_Cdr` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `initial_fields` smallint(5) unsigned NOT NULL DEFAULT '163',
+  `Fleet_Cdr` tinyint(3) unsigned NOT NULL DEFAULT '70',
+  `Defs_Cdr` tinyint(3) unsigned NOT NULL DEFAULT '20',
+  `initial_fields` smallint(5) unsigned NOT NULL DEFAULT '500',
   `uni_name` varchar(30) NOT NULL,
   `game_name` varchar(30) NOT NULL,
   `game_disable` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `close_reason` text NOT NULL,
-  `metal_basic_income` double(255,0) NOT NULL DEFAULT '20',
-  `crystal_basic_income` double(255,0) NOT NULL DEFAULT '10',
+  `metal_basic_income` double(255,0) NOT NULL DEFAULT '200',
+  `crystal_basic_income` double(255,0) NOT NULL DEFAULT '150',
   `deuterium_basic_income` double(255,0) NOT NULL DEFAULT '0',
   `energy_basic_income` double(255,0) NOT NULL DEFAULT '0',
   `LastSettedGalaxyPos` tinyint(3) unsigned NOT NULL DEFAULT '1',
@@ -182,7 +165,7 @@ CREATE TABLE `%PREFIX%config` (
   `noobprotection` int(11) NOT NULL DEFAULT '0',
   `noobprotectiontime` int(11) NOT NULL DEFAULT '5000',
   `noobprotectionmulti` int(11) NOT NULL DEFAULT '5',
-  `forum_url` varchar(128) NOT NULL DEFAULT 'http://2moons.de',
+  `forum_url` varchar(128) NOT NULL DEFAULT 'http://google.com',
   `adm_attack` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `debug` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `lang` varchar(2) NOT NULL DEFAULT '',
@@ -242,12 +225,12 @@ CREATE TABLE `%PREFIX%config` (
   `chat_socket_ip` varchar(40) NOT NULL DEFAULT '',
   `chat_socket_port` smallint(5) NOT NULL DEFAULT '0',
   `chat_socket_chatid` tinyint(1) NOT NULL DEFAULT '1',
-  `max_galaxy` tinyint(3) unsigned NOT NULL DEFAULT '9',
+  `max_galaxy` tinyint(3) unsigned NOT NULL DEFAULT '5',
   `max_system` smallint(5) unsigned NOT NULL DEFAULT '400',
   `max_planets` tinyint(3) unsigned NOT NULL DEFAULT '15',
   `planet_factor` float(2,1) NOT NULL DEFAULT '1.0',
-  `max_elements_build` tinyint(3) unsigned NOT NULL DEFAULT '5',
-  `max_elements_tech` tinyint(3) unsigned NOT NULL DEFAULT '2',
+  `max_elements_build` tinyint(3) unsigned NOT NULL DEFAULT '8',
+  `max_elements_tech` tinyint(3) unsigned NOT NULL DEFAULT '4',
   `max_elements_ships` tinyint(3) unsigned NOT NULL DEFAULT '10',
   `min_player_planets` tinyint(3) unsigned NOT NULL DEFAULT '9',
   `planets_tech` TINYINT NOT NULL DEFAULT  '11',
@@ -255,20 +238,20 @@ CREATE TABLE `%PREFIX%config` (
   `planets_per_tech` FLOAT(2,1) NOT NULL DEFAULT  '0.5',
   `max_fleet_per_build` double(255,0) unsigned NOT NULL DEFAULT '10000000000',
   `deuterium_cost_galaxy` int(11) unsigned NOT NULL DEFAULT '10',
-  `max_dm_missions` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `max_dm_missions` tinyint(3) unsigned NOT NULL DEFAULT '2',
   `max_overflow` float(2,1) NOT NULL DEFAULT '1.0',
   `moon_factor` float(2,1) NOT NULL DEFAULT '1.0',
   `moon_chance` tinyint(3) unsigned NOT NULL DEFAULT '20',
-  `darkmatter_cost_trader` int(11) unsigned NOT NULL DEFAULT '750',
+  `darkmatter_cost_trader` int(11) unsigned NOT NULL DEFAULT '500',
   `factor_university` tinyint(3) unsigned NOT NULL DEFAULT '8',
-  `max_fleets_per_acs` tinyint(3) unsigned NOT NULL DEFAULT '16',
+  `max_fleets_per_acs` tinyint(3) unsigned NOT NULL DEFAULT '8',
   `debris_moon` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `vmode_min_time` int(11) NOT NULL DEFAULT '172800',
   `gate_wait_time` int(11) NOT NULL DEFAULT '3600',
-  `metal_start` double(255,0) unsigned NOT NULL DEFAULT '500',
-  `crystal_start` double(255,0) unsigned NOT NULL DEFAULT '500',
-  `deuterium_start` double(255,0) unsigned NOT NULL DEFAULT '0',
-  `darkmatter_start` double(255,0) unsigned NOT NULL DEFAULT '0',
+  `metal_start` double(255,0) unsigned NOT NULL DEFAULT '5000',
+  `crystal_start` double(255,0) unsigned NOT NULL DEFAULT '5000',
+  `deuterium_start` double(255,0) unsigned NOT NULL DEFAULT '2000',
+  `darkmatter_start` double(255,0) unsigned NOT NULL DEFAULT '10000',
   `ttf_file` varchar(128) NOT NULL DEFAULT 'styles/resource/fonts/DroidSansMono.ttf',
   `ref_active` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `ref_bonus` int(11) unsigned NOT NULL DEFAULT '1000',
@@ -482,7 +465,7 @@ CREATE TABLE `%PREFIX%notes` (
 
 CREATE TABLE `%PREFIX%planets` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) DEFAULT 'Hauptplanet',
+  `name` varchar(20) DEFAULT 'Planeta',
   `id_owner` int(11) unsigned DEFAULT NULL,
   `universe` tinyint(3) unsigned NOT NULL,
   `galaxy` tinyint(3) NOT NULL DEFAULT '0',
@@ -499,7 +482,7 @@ CREATE TABLE `%PREFIX%planets` (
   `image` varchar(32) NOT NULL DEFAULT 'normaltempplanet01',
   `diameter` int(11) unsigned NOT NULL DEFAULT '12800',
   `field_current` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `field_max` smallint(5) unsigned NOT NULL DEFAULT '163',
+  `field_max` smallint(5) unsigned NOT NULL DEFAULT '500',
   `temp_min` int(3) NOT NULL DEFAULT '-17',
   `temp_max` int(3) NOT NULL DEFAULT '23',
   `eco_hash` varchar(32) NOT NULL DEFAULT '',
@@ -929,7 +912,7 @@ CREATE TABLE `%PREFIX%vars_requriements` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `%PREFIX%config` (`uni`, `VERSION`, `uni_name`, `game_name`, `close_reason`, `OverviewNewsText`, `moduls`, `disclamerAddress`, `disclamerPhone`, `disclamerMail`, `disclamerNotice`) VALUES
-(1, '%VERSION%', '', '2Moons', '', '', '', '', '', '', '');
+(1, '%VERSION%', '', 'FreeStar', '', '', '', '', '', '', '');
 
 INSERT INTO `%PREFIX%cronjobs` (`cronjobID`, `name`, `isActive`, `min`, `hours`, `dom`, `month`, `dow`, `class`, `nextTime`, `lock`) VALUES
 (NULL, 'referral', 1, '0,30', '*', '*', '*', '*', 'ReferralCronjob', 0, NULL),

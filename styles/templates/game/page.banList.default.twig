@@ -1,4 +1,5 @@
 {block name="title" prepend}{$LNG.lm_banned}{/block}
+
 {block name="content"}
 
 <div class="content_page">
@@ -9,35 +10,55 @@
 	<div id="result_search" style="text-align: center;">
 		<table style="width:100%;">
 			<tr class="title">
-				<td>{$LNG.bn_from}</td>
-				<td>{$LNG.bn_until}</td>
-				<td>{$LNG.bn_player}</td>
-				<td>{$LNG.bn_by}</td>
-				<td>{$LNG.bn_reason}</td>
+				<td>{$LNG.bn_from}</td> {# Kolumna z datą zbanowania #}
+				<td>{$LNG.bn_until}</td> {# Kolumna z datą końca bana #}
+				<td>{$LNG.bn_player}</td> {# Kolumna z nazwą zbanowanego gracza #}
+				<td>{$LNG.bn_by}</td> {# Kolumna z nazwą administratora, który zbanował #}
+				<td>{$LNG.bn_reason}</td> {# Kolumna z powodem bana #}
 			</tr>
-			{if $banCount}
+			{if $banCount} {# Jeśli liczba zbanowanych graczy jest większa od zera #}
 			<tr>
-				<td class="right" colspan="5">{$LNG.mg_page}: {if $page != 1}<a href="game.php?page=banList&amp;side={$page - 1}">&laquo;</a>&nbsp;{/if}{for $site=1 to $maxPage}<a href="game.php?page=banList&amp;side={$site}">{if $site == $page}<b>[{$site}]</b>{else}[{$site}]{/if}</a>{if $site != $maxPage}&nbsp;{/if}{/for}{if $page != $maxPage}&nbsp;<a href="game.php?page=banList&amp;side={$page + 1}">&raquo;</a>{/if}</td>
+				<td class="right" colspan="5">
+					{$LNG.mg_page}: {# Tekst "Strona:" #}
+					{if $page != 1}<a href="game.php?page=banList&amp;side={$page - 1}">&laquo;</a>&nbsp;{/if} {# Link do poprzedniej strony, jeśli nie jesteśmy na pierwszej #}
+					{for $site=1 to $maxPage} {# Pętla generująca linki do poszczególnych stron #}
+						<a href="game.php?page=banList&amp;side={$site}">
+							{if $site == $page}<b>[{$site}]</b>{else}[{$site}]{/if} {# Wyświetl numer aktualnej strony pogrubiony #}
+						</a>
+						{if $site != $maxPage}&nbsp;{/if} {# Dodaj spację między linkami do stron, jeśli to nie ostatnia strona #}
+					{/for}
+					{if $page != $maxPage}&nbsp;<a href="game.php?page=banList&amp;side={$page + 1}">&raquo;</a>{/if} {# Link do następnej strony, jeśli nie jesteśmy na ostatniej #}
+				</td>
 			</tr>
-			{foreach $banList as $banRow}
+			{foreach $banList as $banRow} {# Pętla wyświetlająca dane każdego zbanowanego gracza #}
 			<tr>
-				<td>{$banRow.from}</td>
-				<td>{$banRow.to}</td>
-				<td>{$banRow.player}</td>
-				<td><a href="mailto:{$banRow.mail}" title="{$banRow.info}">{$banRow.admin}</a></td>
-				<td>{$banRow.theme}</td>
+				<td>{$banRow.from}</td> {# Data zbanowania #}
+				<td>{$banRow.to}</td> {# Data końca bana #}
+				<td>{$banRow.player}</td> {# Nazwa zbanowanego gracza #}
+				<td><a href="mailto:{$banRow.mail}" title="{$banRow.info}">{$banRow.admin}</a></td> {# Link mailto do administratora z tytułem informującym #}
+				<td>{$banRow.theme}</td> {# Powód bana #}
 			</tr>
 			{/foreach}
 			<tr>
-				<td class="right" colspan="5">{$LNG.mg_page}: {if $page != 1}<a href="game.php?page=banList&amp;side={$page - 1}">&laquo;</a>&nbsp;{/if}{for $site=1 to $maxPage}<a href="game.php?page=banList&amp;side={$site}">{if $site == $page}<b>[{$site}]</b>{else}[{$site}]{/if}</a>{if $site != $maxPage}&nbsp;{/if}{/for}{if $page != $maxPage}&nbsp;<a href="game.php?page=banList&amp;side={$page + 1}">&raquo;</a>{/if}</td>
+				<td class="right" colspan="5">
+					{$LNG.mg_page}: {# Tekst "Strona:" #}
+					{if $page != 1}<a href="game.php?page=banList&amp;side={$page - 1}">&laquo;</a>&nbsp;{/if} {# Link do poprzedniej strony #}
+					{for $site=1 to $maxPage} {# Pętla generująca linki do stron #}
+						<a href="game.php?page=banList&amp;side={$site}">
+							{if $site == $page}<b>[{$site}]</b>{else}[{$site}]{/if} {# Wyświetl numer strony #}
+						</a>
+						{if $site != $maxPage}&nbsp;{/if} {# Dodaj spację #}
+					{/for}
+					{if $page != $maxPage}&nbsp;<a href="game.php?page=banList&amp;side={$page + 1}">&raquo;</a>{/if} {# Link do następnej strony #}
+				</td>
 			</tr>
 			<tr>
-				<td colspan="5">{$LNG.bn_exists}{$banCount|number}{$LNG.bn_players_banned}</td>
+				<td colspan="5">{$LNG.bn_exists}{$banCount|number}{$LNG.bn_players_banned}</td> {# Wyświetl liczbę zbanowanych graczy #}
 			</tr>
-			{else}
+			{else} {# Jeśli nie ma zbanowanych graczy #}
 			<tr>
-				<td colspan="5">{$LNG.bn_no_players_banned}</td>
-			</tr>	
+				<td colspan="5">{$LNG.bn_no_players_banned}</td> {# Wyświetl komunikat o braku zbanowanych graczy #}
+			</tr>
 			{/if}
 		</table>
 	</div>

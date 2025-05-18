@@ -1,7 +1,4 @@
 <?php
-
-
-
 class ShowBuddyListPage extends AbstractGamePage
 {
 	public static $requireModule = MODULE_BUDDYLIST;

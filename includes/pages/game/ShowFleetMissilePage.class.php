@@ -1,7 +1,4 @@
 <?php
-
-
-
 class ShowFleetMissilePage extends AbstractGamePage
 {
 	public static $requireModule = MODULE_MISSILEATTACK;

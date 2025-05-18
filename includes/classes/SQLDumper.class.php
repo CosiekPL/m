@@ -1,7 +1,4 @@
 <?php
-
-
-
 class SQLDumper
 {	
 	public function dumpTablesToFile($dbTables, $filePath)

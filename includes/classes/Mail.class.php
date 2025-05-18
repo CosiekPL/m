@@ -1,7 +1,4 @@
 <?php
-
-
-
 class Mail
 {	
 	static public function send($mailTarget, $mailTargetName, $mailSubject, $mailContent)

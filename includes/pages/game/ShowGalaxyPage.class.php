@@ -1,7 +1,4 @@
 <?php
-
-
-
 require_once('includes/classes/class.GalaxyRows.php');
 
 class ShowGalaxyPage extends AbstractGamePage

@@ -1,7 +1,4 @@
 <?php
-
-
-
 class MissionCaseDestruction extends MissionFunctions implements Mission
 {
 	/**

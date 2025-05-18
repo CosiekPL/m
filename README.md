@@ -30,7 +30,7 @@ Projekt został zaktualizowany do:
 
 Ten projekt został zaktualizowany z użyciem technologii:
 - PHP 8.4
-- Twig 3.7 jako system szablonów (migracja ze Smarty)
+- Twig 3.21.2 jako system szablonów (migracja ze Smarty)
 
 ## Instalacja
 
@@ -57,38 +57,3 @@ Ten projekt został zaktualizowany z użyciem technologii:
 - Zmiana pętli: `{foreach}...{/foreach}` → `{% for item in items %}...{% endfor %}`
 - Dołączanie szablonów: `{include}` → `{% include %}`
 - Dziedziczenie szablonów: `{% extends "base.twig" %}` i `{% block content %}...{% endblock %}`
-
-### Przykłady
-1. Instrukcje warunkowe:
-   ```twig
-   {% if user.isAdmin %}
-       <span class="badge bg-danger">Admin</span>
-   {% elseif user.isModerator %}
-       <span class="badge bg-warning">Moderator</span>
-   {% else %}
-       <span class="badge bg-primary">Użytkownik</span>
-   {% endif %}
-   ```
-
-2. Pętle:
-   ```twig
-   {% for planet in planets %}
-       <div class="planet-item">
-           <h3>{{ planet.name }}</h3>
-           <p>Pozycja: [{{ planet.galaxy }}:{{ planet.system }}:{{ planet.planet }}]</p>
-       </div>
-   {% else %}
-       <p>Brak planet.</p>
-   {% endfor %}
-   ```
-
-3. Filtry:
-   ```twig
-   {{ user.points|number_format }} punktów
-   {{ message|raw }} <!-- dla niesformatowanego HTML -->
-   {{ date|date("d.m.Y H:i") }}
-   ```
-
-## Konfiguracja Twig
-
-Ustawienia Twig znajdują się w pliku `includes/constants.php`:

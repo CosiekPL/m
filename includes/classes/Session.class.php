@@ -1,7 +1,4 @@
 <?php
-
-
-
 class Session
 {
 	static private $obj = NULL;

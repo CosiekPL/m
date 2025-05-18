@@ -1,7 +1,4 @@
 <?php
-
-
-
 class MissionFunctions
 {	
 	public $kill	= 0;

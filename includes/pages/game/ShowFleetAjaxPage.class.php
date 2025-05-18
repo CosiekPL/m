@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 class ShowFleetAjaxPage extends AbstractGamePage
 {
 	public $returnData	= array();

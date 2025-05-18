@@ -1,14 +1,12 @@
 <?php
 
-
-
 define('MODE', 'INSTALL');
 define('ROOT_PATH', str_replace('\\', '/', dirname(dirname(__FILE__))) . '/');
 set_include_path(ROOT_PATH);
 chdir(ROOT_PATH);
 
 require 'includes/common.php';
-$THEME->setUserTheme('gow');
+$THEME->setUserTheme('star');
 $LNG = new Language;
 $LNG->getUserAgentLanguage();
 $LNG->includeData(array('L18N', 'INGAME', 'INSTALL', 'CUSTOM'));
@@ -149,7 +147,7 @@ switch ($mode) {
 
         @set_time_limit(600);
 
-		$fileName = '2MoonsBackup_' . date('Y_m_d_H_i_s', TIMESTAMP) . '.sql';
+		$fileName = 'Backup_' . date('Y_m_d_H_i_s', TIMESTAMP) . '.sql';
 		$filePath = 'includes/backups/' . $fileName;
 		require 'includes/classes/SQLDumper.class.php';
 		$dump = new SQLDumper;

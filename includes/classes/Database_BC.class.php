@@ -1,7 +1,4 @@
 <?php
-
-
- 
 class Database_BC extends mysqli
 {
 	protected $exception;

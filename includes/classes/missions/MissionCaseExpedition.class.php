@@ -1,7 +1,4 @@
 <?php
-
-
-
 class MissionCaseExpedition extends MissionFunctions implements Mission
 {
 	function __construct($fleet)

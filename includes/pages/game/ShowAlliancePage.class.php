@@ -1,7 +1,4 @@
 <?php
-
-
-
 class ShowAlliancePage extends AbstractGamePage
 {
 	public static $requireModule = MODULE_ALLIANCE;

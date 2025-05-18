@@ -1,26 +1,11 @@
 <?php
-/**
- *  2Moons
- *   by Jan-Otto Kröpke 2009-2016
- *
- * For the full copyright and license information, please view the LICENSE
- *
- * @package 2Moons
- * @author Jan-Otto Kröpke <slaver7@gmail.com>
- * @copyright 2009 Lucky
- * @copyright 2016 Jan-Otto Kröpke <slaver7@gmail.com>
- * @licence MIT
- * @version 1.8.0
- * @link https://github.com/jkroepke/2Moons
- */
-
 declare(strict_types=1);
 
 //SET TIMEZONE (if Server Timezone are not correct)
 //date_default_timezone_set('Europe/Warsaw');
 
 //TEMPLATES DEFAULT SETTINGS
-define('DEFAULT_THEME'            , 'gow');
+define('DEFAULT_THEME'            , 'star');
 define('HTTPS'                    , false); // true = aktywny https | false = nieaktywny https
 define('PROTOCOL'                 , HTTPS ? 'https://' : 'http://'); // Protokół strony
 define('HTTP_HOST'                , 'localhost');
@@ -34,10 +19,10 @@ define('COMBAT_REPORT_HISTORY_DAYS'    , 14);
 
 // DANE UNIWERSUM, nazwa realmu, prędkości, galaktyki, systemy i planety
 define('UNIVERSE_FACTOR'               , 1);
-define('MAX_GALAXY_IN_WORLD'           , 9);
-define('MAX_SYSTEM_IN_GALAXY'          , 499);
+define('MAX_GALAXY_IN_WORLD'           , 5);
+define('MAX_SYSTEM_IN_GALAXY'          , 400);
 define('MAX_PLANET_IN_SYSTEM'          , 15);
 
 // DODANE DLA TWIG
-define('TWIG_CACHE_ENABLED'            , false); // Ustaw na true w środowisku produkcyjnym
-define('TWIG_DEBUG'                    , true);  // Ustaw na false w środowisku produkcyjnym
+define('TWIG_CACHE_ENABLED'            , true); // Ustaw na true w środowisku produkcyjnym
+define('TWIG_DEBUG'                    , false);  // Ustaw na false w środowisku produkcyjnym
