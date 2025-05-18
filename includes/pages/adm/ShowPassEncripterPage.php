@@ -20,5 +20,5 @@ function ShowPassEncripterPage()
 		'et_pass' 			=> $LNG['et_pass'],
 	));
 	
-	$template->show('PassEncripterPage.tpl');
+	$template->show('PassEncripterPage.twig');
 }

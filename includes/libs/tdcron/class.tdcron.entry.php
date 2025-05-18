@@ -110,7 +110,7 @@
 							IDX_MONTH	=> array(
 										'/(january|januar|jan)/i'			=> 1,
 										'/(february|februar|feb)/i'			=> 2,
-										'/(march|maerz|märz|mar|mae|mär)/i'		=> 3,
+										'/(march|maerz|mrz|mar|mae|mr)/i'		=> 3,
 										'/(april|apr)/i'				=> 4,
 										'/(may|mai)/i'					=> 5,
 										'/(june|juni|jun)/i'				=> 6,

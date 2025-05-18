@@ -1,0 +1,61 @@
+{block name="title" prepend}{{ LNG.lm_info }}{/block}
+{block name="content"}
+
+<div class="content_page_popup">
+	<div class="title_popup">
+		{$LNG.tech.$elementID}
+	</div>
+
+	<div class="content_popup">
+		<table style="width:100%;">
+			<tbody>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td class="transparent" style="width:120px"><img width="120" height="120" src="{{ dpath }}gebaeude/{{ elementID }}.{if $elementID >=600 && $elementID <= 699}jpg{% else %}gif{% endif %}" alt=""></td>
+							<td class="transparent left"><p>{$LNG.longDescription.$elementID}</p>
+							{if !empty($Bonus)}<p>
+							<b>{{ LNG.in_bonus }}</b><br>
+							{foreach $Bonus as $BonusName => $elementBouns}{if $elementBouns[0] < 0}-{% else %}+{% endif %}{if $elementBouns[1] == 0}{abs($elementBouns[0] * 100)}%{% else %}{floatval($elementBouns[0])}{% endif %} {$LNG.bonus.$BonusName}<br>{% endfor %}
+							</p>{% endif %}	
+							{if !empty($FleetInfo)}
+							{if !empty($FleetInfo.rapidfire.to)}<p>
+							{foreach $FleetInfo.rapidfire.to as $rapidfireID => $shoots}
+							{{ LNG.in_rf_again }} {$LNG.tech.$rapidfireID}: <span style="color:#00ff00">{$shoots|number}</span><br>
+							{% endfor %}
+							</p>{% endif %}
+							{if !empty($FleetInfo.rapidfire.from)}<p>
+							{foreach $FleetInfo.rapidfire.from as $rapidfireID => $shoots}
+							{{ LNG.in_rf_from }} {$LNG.tech.$rapidfireID}: <span style="color:#ff0000">{$shoots|number}</span><br>
+							{% endfor %}
+							</p>{% endif %}
+							{% endif %}				
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+
+		{if !empty($productionTable.production)}
+		{% include "shared.information.production.twig" %}
+		{% endif %}
+		{if !empty($productionTable.storage)}
+		{% include "shared.information.storage.twig" %}
+		{% endif %}
+		{if !empty($FleetInfo)}
+		{% include "shared.information.shipInfo.twig" %}
+		{% endif %}
+		{if !empty($gateData)}
+		{% include "shared.information.gate.twig" %}
+		{% endif %}
+		{if !empty($MissileList)}
+		{% include "shared.information.missiles.twig" %}
+		{% endif %}
+
+	</div>
+</div>
+
+{/block}

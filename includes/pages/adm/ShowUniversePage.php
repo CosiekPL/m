@@ -171,5 +171,5 @@ function ShowUniversePage() {
 		'SID'		=> session_id(),
 	));
 	
-	$template->show('UniversePage.tpl');
+	$template->show('UniversePage.twig');
 }

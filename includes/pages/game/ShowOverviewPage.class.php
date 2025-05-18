@@ -288,7 +288,7 @@ class ShowOverviewPage extends AbstractGamePage
 			'path'						=> HTTP_PATH,
 		));
 		
-		$this->display('page.overview.default.tpl');
+		$this->display('page.overview.default.twig');
 	}
 	
 	function actions() 
@@ -301,7 +301,7 @@ class ShowOverviewPage extends AbstractGamePage
 		$this->assign(array(
 			'ov_security_confirm'		=> sprintf($LNG['ov_security_confirm'], $PLANET['name'].' ['.$PLANET['galaxy'].':'.$PLANET['system'].':'.$PLANET['planet'].']'),
 		));
-		$this->display('page.overview.actions.tpl');
+		$this->display('page.overview.actions.twig');
 	}
 	
 	function rename() 

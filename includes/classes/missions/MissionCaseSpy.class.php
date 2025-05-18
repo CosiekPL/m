@@ -142,7 +142,7 @@ class MissionCaseSpy extends MissionFunctions implements Mission
 			'LNG'			=> $LNG
 		), false);
 				
-		$spyReport	= $template->fetch('shared.mission.spyReport.tpl');
+		$spyReport	= $template->fetch('shared.mission.spyReport.twig');
 
 		PlayerUtil::sendMessage($this->_fleet['fleet_owner'], 0, $LNG['sys_mess_qg'], 0, $LNG['sys_mess_spy_report'],
 			$spyReport, $this->_fleet['fleet_start_time'], NULL, 1, $this->_fleet['fleet_universe']);

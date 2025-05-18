@@ -273,6 +273,6 @@ class ShowFleetTablePage extends AbstractGamePage
 			'bonusHyperspace'		=> $USER[$resource[118]] * 30,
 		));
 		
-		$this->display('page.fleetTable.default.tpl');
+		$this->display('page.fleetTable.default.twig');
 	}
 }

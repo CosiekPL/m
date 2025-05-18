@@ -101,7 +101,7 @@ function ShowAccountEditorPage()
 			}
 			
 			
-			$template->show('AccountEditorPageResources.tpl');
+			$template->show('AccountEditorPageResources.twig');
 		break;
 		case 'ships':
 			if($_POST)
@@ -169,7 +169,7 @@ function ShowAccountEditorPage()
 				'inputlist'			=> $INPUT,
 			));
 						
-			$template->show('AccountEditorPageShips.tpl');
+			$template->show('AccountEditorPageShips.twig');
 		break;
 
 		case 'defenses':
@@ -236,7 +236,7 @@ function ShowAccountEditorPage()
 				'inputlist'			=> $INPUT,
 			));
 						
-			$template->show('AccountEditorPageDefenses.tpl');
+			$template->show('AccountEditorPageDefenses.twig');
 		break;
 		break;
 
@@ -319,7 +319,7 @@ function ShowAccountEditorPage()
 				'inputlist'			=> $INPUT,
 			));
 						
-			$template->show('AccountEditorPageBuilds.tpl');
+			$template->show('AccountEditorPageBuilds.twig');
 		break;
 
 		case 'researchs':
@@ -385,7 +385,7 @@ function ShowAccountEditorPage()
 				'inputlist'			=> $INPUT,
 			));
 						
-			$template->show('AccountEditorPageResearch.tpl');
+			$template->show('AccountEditorPageResearch.twig');
 		break;
 		case 'personal':
 			if ($_POST)
@@ -452,7 +452,7 @@ function ShowAccountEditorPage()
 				'Selector'				=> array(''	=> $LNG['select_option'], 'yes' => $LNG['one_is_no_1'], 'no' => $LNG['one_is_no_0']),
 			));
 						
-			$template->show('AccountEditorPagePersonal.tpl');
+			$template->show('AccountEditorPagePersonal.twig');
 		break;
 
 		case 'officiers':
@@ -518,7 +518,7 @@ function ShowAccountEditorPage()
 				'inputlist'			=> $INPUT,
 			));
 						
-			$template->show('AccountEditorPageOfficiers.tpl');
+			$template->show('AccountEditorPageOfficiers.twig');
 		break;
 
 		case 'planets':
@@ -619,7 +619,7 @@ function ShowAccountEditorPage()
 				exit;
 			}
 			
-			$template->show('AccountEditorPagePlanets.tpl');
+			$template->show('AccountEditorPagePlanets.twig');
 		break;
 
 		case 'alliances':
@@ -670,11 +670,11 @@ function ShowAccountEditorPage()
 				exit;
 			}
 			
-			$template->show('AccountEditorPageAlliance.tpl');
+			$template->show('AccountEditorPageAlliance.twig');
 		break;
 
 		default:
-			$template->show('AccountEditorPageMenu.tpl');
+			$template->show('AccountEditorPageMenu.twig');
 		break;
 	}
 }

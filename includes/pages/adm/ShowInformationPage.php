@@ -69,5 +69,5 @@ function ShowInformationPage()
 		'user_tz'			=> $dateTimeUser->getOffset() / 3600,
 	));
 
-	$template->show('ShowInformationPage.tpl');
+	$template->show('ShowInformationPage.twig');
 }

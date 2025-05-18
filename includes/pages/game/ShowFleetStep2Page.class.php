@@ -120,6 +120,6 @@ class ShowFleetStep2Page extends AbstractGamePage
 			'token' 						=> $token,
 		));
 		
-		$this->display('page.fleetStep2.default.tpl');
+		$this->display('page.fleetStep2.default.twig');
 	}
 }

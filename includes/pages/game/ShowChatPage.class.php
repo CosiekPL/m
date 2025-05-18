@@ -19,6 +19,6 @@ class ShowChatPage extends AbstractGamePage
 			$this->initTemplate();
 		}
 		
-		$this->display('page.chat.default.tpl');
+		$this->display('page.chat.default.twig');
 	}
 }

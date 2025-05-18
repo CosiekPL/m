@@ -50,7 +50,7 @@ function ShowLog()
 function ShowLogOverview() {
 	global $LNG;
 	$template	= new template();	
-	$template->show("LogOverview.tpl");
+	$template->show("LogOverview.twig");
 }
 
 function ShowLogDetail() {
@@ -154,7 +154,7 @@ function ShowLogDetail() {
 		'log_new'		=> $LNG['log_new'],
 	));
 	
-	$template->show("LogDetail.tpl");
+	$template->show("LogDetail.twig");
 }
 
 function ShowLogSettingsList() {
@@ -195,7 +195,7 @@ function ShowLogSettingsList() {
 		'log_id'		=> $LNG['log_id'],
 		'log_view'		=> $LNG['log_view'],
 	));
-	$template->show("LogList.tpl");
+	$template->show("LogList.twig");
 }
 
 function ShowLogPlanetsList() {
@@ -229,7 +229,7 @@ function ShowLogPlanetsList() {
 		'log_id'		=> $LNG['log_id'],
 		'log_view'		=> $LNG['log_view'],
 	));
-	$template->show("LogList.tpl");
+	$template->show("LogList.twig");
 }
 
 function ShowLogPlayersList() {
@@ -262,7 +262,7 @@ function ShowLogPlayersList() {
 		'log_id'		=> $LNG['log_id'],
 		'log_view'		=> $LNG['log_view'],
 	));
-	$template->show("LogList.tpl");
+	$template->show("LogList.twig");
 }
 
 function ShowLogPresent() {
@@ -295,5 +295,5 @@ function ShowLogPresent() {
 		'log_id'		=> $LNG['log_id'],
 		'log_view'		=> $LNG['log_view'],
 	));
-	$template->show("LogList.tpl");
+	$template->show("LogList.twig");
 }

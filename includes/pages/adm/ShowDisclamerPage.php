@@ -62,5 +62,5 @@ function ShowDisclamerPage()
 		'se_disclaimerNotice'	=> $LNG['se_disclaimerNotice'],
 	));
 	
-	$template->show('DisclamerConfigBody.tpl');
+	$template->show('DisclamerConfigBody.twig');
 }

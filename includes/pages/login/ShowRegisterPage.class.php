@@ -83,7 +83,7 @@ class ShowRegisterPage extends AbstractLoginPage
 			'registerRulesDesc'	=> sprintf($LNG['registerRulesDesc'], '<a href="index.php?page=rules">'.$LNG['menu_rules'].'</a>')
 		));
 		
-		$this->display('page.register.default.tpl');
+		$this->display('page.register.default.twig');
 	}
 	
 	function send() 

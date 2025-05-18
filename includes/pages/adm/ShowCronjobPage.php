@@ -164,7 +164,7 @@ function ShowCronjobOverview()
 	$template->assign_vars(array(	
 		'CronjobArray'	=> $CronjobArray,
 	));
-	$template->show("CronjobOverview.tpl");
+	$template->show("CronjobOverview.twig");
 }
 
 function ShowCronjobDetail($detail,$error_msg=NULL) 
@@ -212,6 +212,6 @@ function ShowCronjobDetail($detail,$error_msg=NULL)
 			'error_msg'		=> $error_msg,
 		));
 	}
-	$template->show("CronjobDetail.tpl");
+	$template->show("CronjobDetail.twig");
 }
 

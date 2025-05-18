@@ -230,6 +230,6 @@ class ShowSearchPage extends AbstractGamePage
 			'seachMode'		=> $seachMode,
 		));
 		
-		$this->display('page.search.default.tpl');
+		$this->display('page.search.default.twig');
 	}
 }

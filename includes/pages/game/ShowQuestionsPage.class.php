@@ -17,7 +17,7 @@ class ShowQuestionsPage extends AbstractGamePage
 		
 		$LNG->includeData(array('FAQ'));
 		
-		$this->display('page.questions.default.tpl');
+		$this->display('page.questions.default.twig');
 	}
 	
 	function single()
@@ -36,6 +36,6 @@ class ShowQuestionsPage extends AbstractGamePage
 		$this->assign(array(
 			'questionRow'	=> $LNG['questions'][$categoryID][$questionID],
 		));
-		$this->display('page.questions.single.tpl');
+		$this->display('page.questions.single.twig');
 	}
 }

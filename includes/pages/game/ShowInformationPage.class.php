@@ -343,6 +343,6 @@ class ShowInformationPage extends AbstractGamePage
 			'gateData'			=> $gateData,
 		));
 
-		$this->display('page.information.default.tpl');
+		$this->display('page.information.default.twig');
 	}
 }

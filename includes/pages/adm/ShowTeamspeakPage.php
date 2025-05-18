@@ -95,6 +95,6 @@ function ShowTeamspeakPage() {
 		'ts_password'			=> $config->ts_password,
 		'ts_cron'				=> $config->ts_cron_interval
 	));
-	$template->show('TeamspeakPage.tpl');
+	$template->show('TeamspeakPage.twig');
 
 }

@@ -1,34 +1,16 @@
-{# 
-   Szablon strony błędu wyświetlający komunikat i opcje przekierowania
-   Używany do wyświetlania błędów, powiadomień itp.
-#}
-{% extends "layout.light.twig" %}
+{block name="title" prepend}{{ LNG.fcm_info }}{/block}
+{block name="content"}
+	<div class="container" style="margin-top: 80px;">
+		<div class="panel panel-default">
+			<div class="panel-heading">{{ LNG.fcm_info }}</div>
+			<div class="panel-body">
+				<table class="table519">
+					<tr>
+						<td><p>{{ message }}</p>{if !empty($redirectButtons)}<p>{foreach $redirectButtons as $button}<a href="{{ button.url }}"><button class="btn btn-default">{{ button.label }}</button></a>{% endfor %}</p>{% endif %}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
 
-{% block content %}
-<div id="error_box">
-    <div class="error_message">
-        <h2>{{ LNG.fcm_info }}</h2>
-        
-        <div class="message_content">
-            {{ message|raw }}
-        </div>
-        
-        {% if redirectButtons %}
-            <div class="redirect_buttons">
-                {% for button in redirectButtons %}
-                    <a href="{{ button.url }}" class="btn {% if button.primary %}btn-primary{% else %}btn-secondary{% endif %}">
-                        {{ button.label }}
-                    </a>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
-        {% if goto %}
-            <div class="redirect_info">
-                <span id="redirectJS">{{ LNG.redirecting }}</span>
-                <span class="redirect_countdown">{{ gotoinsec }}</span>
-            </div>
-        {% endif %}
-    </div>
-</div>
-{% endblock %}
+{/block}

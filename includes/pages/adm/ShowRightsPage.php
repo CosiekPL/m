@@ -48,7 +48,7 @@ function ShowRightsPage()
 					'sid'						=> session_id(), 
 				));
 				
-				$template->show('ModerrationRightsPostPage.tpl');		
+				$template->show('ModerrationRightsPostPage.twig');		
 				exit;
 			}
 							
@@ -87,7 +87,7 @@ function ShowRightsPage()
 				'sid'						=> session_id(), 
 			));
 	
-			$template->show('ModerrationRightsPage.tpl');
+			$template->show('ModerrationRightsPage.twig');
 		break;
 		case 'users':
 			$template	= new template();
@@ -145,7 +145,7 @@ function ShowRightsPage()
 				'sid'						=> session_id(), 
 			));
 	
-			$template->show('ModerrationUsersPage.tpl');
+			$template->show('ModerrationUsersPage.twig');
 		break;
 	}
 }

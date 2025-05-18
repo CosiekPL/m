@@ -1,129 +1,73 @@
-{% extends "layout.universe.twig" %}
+{block name="title" prepend}{{ LNG.siteTitleIndex }}{/block}
+{block name="content"}
+	<div class="jumbotron hidden-xs" style="margin-top:10px;">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12 col-lg-12">
+					<h1>{{ descHeader }}</h1>
+					<p>{{ descText }}</p>
+					<p style="text-align: center;"><a class="btn btn-lg btn-success" href="index.php?page=screens">{{ LNG.buttonScreenshot }}</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
 
-{% block content %}
-<div class="row">
-    <div class="col-lg-8 offset-lg-2">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">{{ LNG.welcome_to }} {{ game_name }}</h4>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <img src="styles/resource/images/login/login-banner.jpg" alt="{{ game_name }}" class="img-fluid rounded mb-4">
-                        
-                        <div class="login-info">
-                            <h5>{{ LNG.server_description_title }}</h5>
-                            <p>{{ server_description }}</p>
-                            
-                            <div class="login-stats d-flex justify-content-between">
-                                <div class="stat-item text-center">
-                                    <div class="stat-value">{{ userCount }}</div>
-                                    <div class="stat-label">{{ LNG.user_count }}</div>
-                                </div>
-                                <div class="stat-item text-center">
-                                    <div class="stat-value">{{ activeUserCount }}</div>
-                                    <div class="stat-label">{{ LNG.active_user_count }}</div>
-                                </div>
-                                <div class="stat-item text-center">
-                                    <div class="stat-value">{{ onlineUserCount }}</div>
-                                    <div class="stat-label">{{ LNG.online_user_count }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="login-form-container">
-                            {% if error %}
-                            <div class="alert alert-danger">
-                                {{ error }}
-                            </div>
-                            {% endif %}
-                            
-                            <form id="loginForm" method="post">
-                                <div class="mb-3">
-                                    <label for="universe" class="form-label">{{ LNG.universe }}</label>
-                                    <select name="uni" id="universe" class="form-select">
-                                        {% for uniID, uniName in universeSelect %}
-                                        <option value="{{ uniID }}" {% if uniID == universe %}selected{% endif %}>{{ uniName }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">{{ LNG.username }}</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                                        <input type="text" name="username" id="username" class="form-control" value="{{ username }}" required>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">{{ LNG.password }}</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                                        <input type="password" name="password" id="password" class="form-control" required>
-                                    </div>
-                                </div>
-                                
-                                {% if recaptchaEnable %}
-                                <div class="mb-3">
-                                    <div class="g-recaptcha" data-sitekey="{{ recaptchaPublicKey }}"></div>
-                                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-                                </div>
-                                {% endif %}
-                                
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1">
-                                        <label class="form-check-label" for="remember">
-                                            {{ LNG.remember_me }}
-                                        </label>
-                                    </div>
-                                    <a href="index.php?page=lostPassword" class="text-primary">{{ LNG.lost_password }}</a>
-                                </div>
-                                
-                                <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-primary btn-lg" name="login">{{ LNG.login }}</button>
-                                    <a href="index.php?page=register" class="btn btn-outline-secondary btn-lg">{{ LNG.register }}</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% if gameNews %}
-<div class="row mt-4">
-    <div class="col-lg-8 offset-lg-2">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h4 class="mb-0">{{ LNG.game_news }}</h4>
-            </div>
-            <div class="card-body">
-                <div class="news-list">
-                    {% for news in gameNews %}
-                    <div class="news-item mb-4">
-                        <h5 class="news-title">{{ news.title }}</h5>
-                        <div class="news-meta d-flex justify-content-between text-muted small mb-2">
-                            <span>{{ news.from }}</span>
-                            <span>{{ news.date }}</span>
-                        </div>
-                        <div class="news-content">
-                            {{ news.text|raw }}
-                        </div>
-                    </div>
-                    {% if not loop.last %}
-                    <hr>
-                    {% endif %}
+	<div class="container mobile">
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">{{ LNG.siteTitleNews }}</div>
+                    {foreach $newsList as $newsRow}
+						<div class="panel-body">
+							<h1 class="page-header">{{ newsRow.title }}</h1>
+							<p>{{ newsRow.text }}</p>
+						</div>
+                    {foreachelse}
+						<div class="panel-body">
+							<h3 class="page-header">{{ LNG.news_does_not_exist }}</h3>
+						</div>
                     {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-{% endblock %}
+					<div style="text-align: right; padding: 10px;">
+						<a href="index.php?page=news">
+							<button type="button" class="btn btn-success">All {{ LNG.siteTitleNews }}</button>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">{{ LNG.loginHeader }}</div>
+					<div class="panel-body">
+						<form id="login" name="login" action="index.php?page=login" data-action="index.php?page=login" method="post">
+							<div class="form-group">
+								<label for="universe">{{ LNG.universe }}</label>
+								<select name="uni" id="universe" class="form-control changeAction">{html_options options=$universeSelect selected=$UNI}</select>
+							</div>
+							<div class="form-group">
+								<label for="username">{{ LNG.loginUsername }}</label>
+								<input type="text" class="form-control" name="username" id="username" placeholder="{{ LNG.loginUsername }}">
+							</div>
+							<div class="form-group">
+								<label for="password">{{ LNG.loginPassword }}</label>
+								<input type="password" class="form-control" name="password" id="password" placeholder="{{ LNG.loginPassword }}">
+							</div>
+							<div style="text-align: right;">
+								<button type="submit" class="btn btn-primary">{{ LNG.loginButton }}</button>
+							</div>
+						</form>
+                        {% if facebookEnable %}<a href="#" data-href="index.php?page=externalAuth&method=facebook" class="fb_login"><img src="styles/resource/images/facebook/fb-connect-large.png" alt=""></a>{% endif %}<!-- http://b.static.ak.fbcdn.net/rsrc.php/zB6N8/hash/4li2k73z.gif -->
+						<div style="text-align: center">
+							<a href="index.php?page=register">{{ LNG.buttonRegister }}</a> {% if mailEnable %}- <a href="index.php?page=lostPassword">{{ LNG.buttonLostPassword }}</a>{% endif %}
+							<br>
+							<span class="small">{{ loginInfo }}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{/block}
+{block name="script" append}
+<script>{% if code %}alert({$code|json});{% endif %}</script>
+{/block}

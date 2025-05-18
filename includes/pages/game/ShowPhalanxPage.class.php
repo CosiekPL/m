@@ -92,6 +92,6 @@ class ShowPhalanxPage extends AbstractGamePage
 			'fleetTable'	=> $fleetTable,
 		));
 		
-		$this->display('page.phalanx.default.tpl');			
+		$this->display('page.phalanx.default.twig');			
 	}
 }

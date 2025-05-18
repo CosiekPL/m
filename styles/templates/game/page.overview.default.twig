@@ -1,607 +1,112 @@
-{% extends "game_layout.twig" %}
-{% extends "layout.game.twig" %}
+{block name="title" prepend}{{ LNG.lm_overview }}{/block}
+{block name="script" append}{/block}
+{block name="content"}
 
-{% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">{{ LNG.ov_planet }} "{{ planet.name }}"</h4>
-                    <div>
-                        {% if Moon %}
-                        <a href="game.php?page=overview&amp;cp={{ Moon.id }}&amp;re=0" class="btn btn-sm btn-light" title="{{ LNG.ov_moon }}">{{ Moon.name }}</a>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="card-body p-0">
-                    <div class="row g-0">
-                        <div class="col-md-5 text-center py-3">
-                            <img src="styles/theme/{{ userTheme }}/planeten/{{ planet.image }}.jpg" class="img-fluid planet-image" alt="{{ planet.name }}">
-                            {% if buildInfo %}
-                            <div class="mt-3 building-info">
-                                {% for elementID, elementDetail in buildInfo.buildings %}
-                                <div class="building-item">{{ LNG.tech[elementID] }}: {{ elementDetail.level|number_format }}</div>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-7">
-                            <div class="p-3">
-                                <h5>{{ LNG.ov_planet_info }}</h5>
-                                <table class="table table-sm">
-                                    <tr>
-                                        <td>{{ LNG.ov_diameter }}:</td>
-                                        <td>{{ planet.diameter|number_format }} {{ LNG.ov_distance_unit }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_temperature }}:</td>
-                                        <td>{{ LNG.ov_aprox }} {{ planet.temp_min }} {{ LNG.ov_temp_unit }} {{ LNG.ov_to }} {{ planet.temp_max }} {{ LNG.ov_temp_unit }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_position }}:</td>
-                                        <td>[{{ planet.galaxy }}:{{ planet.system }}:{{ planet.planet }}]</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_points }}:</td>
-                                        <td>{{ rankInfo.total_points|number_format }} ({{ LNG.ov_rank }} {{ rankInfo.total_rank|number_format }} {{ LNG.ov_of }} {{ rankInfo.total_rank_count|number_format }})</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_fields }}:</td>
-                                        <td>
-                                            <div class="progress">
-                                                {% set usedFieldsPercent = (planet.field_current / planet.field_max) * 100 %}
-                                                <div class="progress-bar {{ usedFieldsPercent > 80 ? 'bg-danger' : (usedFieldsPercent > 60 ? 'bg-warning' : 'bg-success') }}" 
-                                                     style="width: {{ usedFieldsPercent }}%">
-                                                     {{ planet.field_current }} / {{ planet.field_max }}
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                                
-                                <h5 class="mt-4">{{ LNG.ov_planet_actions }}</h5>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#renameModal">
-                                        <i class="bi bi-pencil-square"></i> {{ LNG.ov_rename_planet }}
-                                    </button>
-                                    {% if planet.planet_type == 1 and planet.id_luna == 0 %}
-                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createMoonModal">
-                                        <i class="bi bi-moon-stars"></i> {{ LNG.ov_create_moon }}
-                                    </button>
-                                    {% endif %}
-                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deletePlanetModal">
-                                        <i class="bi bi-trash"></i> {{ LNG.ov_delete_planet }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            {% if fleetTable.fleets %}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">{{ LNG.ov_fleet }}</h4>
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>{{ LNG.ov_fleet_mission }}</th>
-                                <th>{{ LNG.ov_fleet_count }}</th>
-                                <th>{{ LNG.ov_fleet_return }}</th>
-                                <th>{{ LNG.ov_fleet_time }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for fleetID, fleetDetail in fleetTable.fleets %}
-                            <tr>
-                                <td>
-                                    <span class="badge bg-{{ fleetDetail.mission_style }}">{{ fleetDetail.mission_name }}</span>
-                                    {{ fleetDetail.mission_target }}
-                                </td>
-                                <td>{{ fleetDetail.fleet_amount }}</td>
-                                <td>{{ fleetDetail.fleet_return ? LNG.ov_fleet_return_text : LNG.ov_fleet_departure }}</td>
-                                <td>
-                                    <div class="fleet-timer" data-fleet-time="{{ fleetDetail.fleet_end_time }}" data-fleet-id="{{ fleetID }}">
-                                        {{ fleetDetail.fleet_arrival }}
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {% endif %}
-            
-            {% if news %}
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h4 class="mb-0">{{ LNG.ov_news }}</h4>
-                </div>
-                <div class="card-body">
-                    {{ news|raw }}
-                </div>
-            </div>
-            {% endif %}
-        </div>
-        
-        <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">{{ LNG.ov_server_time }}</h4>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <div class="h3" id="serverTime">{{ serverTime }}</div>
-                        <div>{{ LNG.ov_time_online }}: {{ online_time }}</div>
-                    </div>
-                </div>
-            </div>
-            
-            {% if planet.b_building %}
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">{{ LNG.ov_building }}</h4>
-                </div>
-                <div class="card-body">
-                    <div class="construction-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>{{ planet.b_building_name }}</span>
-                            <span class="badge bg-primary">{{ LNG.tech.level }} {{ planet.b_building_level }}</span>
-                        </div>
-                        <div class="progress mt-2">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                 style="width: {{ planet.b_building_progress }}%" 
-                                 id="buildingProgress" 
-                                 data-end-time="{{ planet.b_building_end }}">
-                                 {{ planet.b_building_time_left }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            
-            {% if USER.b_tech %}
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h4 class="mb-0">{{ LNG.ov_research }}</h4>
-                </div>
-                <div class="card-body">
-                    <div class="research-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>{{ USER.b_tech_name }}</span>
-                            <span class="badge bg-primary">{{ LNG.tech.level }} {{ USER.b_tech_level }}</span>
-                        </div>
-                        <div class="progress mt-2">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
-                                 style="width: {{ USER.b_tech_progress }}%" 
-                                 id="researchProgress" 
-                                 data-end-time="{{ USER.b_tech_end }}">
-                                 {{ USER.b_tech_time_left }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            
-            {% if shipyard_queue %}
-            <div class="card mb-4">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0">{{ LNG.ov_shipyard }}</h4>
-                </div>
-                <div class="card-body">
-                    <div class="shipyard-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>{{ shipyard_queue.name }}</span>
-                            <span class="badge bg-primary">{{ shipyard_queue.amount }}</span>
-                        </div>
-                        <div class="progress mt-2">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" 
-                                 style="width: {{ shipyard_queue.progress }}%" 
-                                 id="shipyardProgress" 
-                                 data-end-time="{{ shipyard_queue.end_time }}">
-                                 {{ shipyard_queue.time_left }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            
-            <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">
-                    <h4 class="mb-0">{{ LNG.ov_events }}</h4>
-                </div>
-                <div class="card-body">
-                    <div class="notification-item">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="bi bi-envelope-fill text-primary me-2 h4 mb-0"></i>
-                            <span>{{ LNG.ov_messages }}</span>
-                            <span class="badge bg-{{ notifyCount > 0 ? 'danger' : 'secondary' }} ms-auto">{{ notifyCount }}</span>
-                        </div>
-                        
-                        {% if notifyCount > 0 %}
-                        <div class="notifications-list">
-                            {% for msgType, msgCount in messages %}
-                                {% if msgCount > 0 %}
-                                <div class="notification-subitem">
-                                    <a href="game.php?page=messages&type={{ msgType }}" class="notification-link">
-                                        <span>{{ LNG['mg_type'][msgType] }}</span>
-                                        <span class="badge bg-primary float-end">{{ msgCount }}</span>
-                                    </a>
-                                </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        <div class="text-center text-muted">{{ LNG.ov_no_messages }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            
-            {% if teamspeakData and not teamspeakData.error %}
-            <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">
-                    <h4 class="mb-0">{{ LNG.ov_teamspeak }}</h4>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <p>{{ LNG.ov_teamspeak_connect|format(teamspeakData.url)|raw }}</p>
-                        <p>{{ LNG.ov_teamspeak_status|format(teamspeakData.current, teamspeakData.max) }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
+<div class="content_page">
+	<div class="title">
+		<div class="onligne">
+			<i class="fas fa-user"></i> {{ LNG.ov_online_user }} : <span style="font-weight: bold; color: lime;">{$onlineUser|number}</span>
+		</div>
+		<span><i class="fas fa-users"></i> {{ LNG.ov_admins_online }} : {foreach $AdminsOnline as $ID => $Name}{if !$Name@first}&nbsp;&bull;&nbsp;{% endif %}<a href="#" onclick="return Dialog.PM({{ ID }})">{{ Name }}</a>{foreachelse}{{ LNG.ov_no_admins_online }}{% endfor %}</span>
+		<div class="ticket">
+			<a href="game.php?page=ticket"><i class="fas fa-ticket-alt"></i> {{ LNG.ov_ticket }}</a>
+		</div>
+	</div>
+
+	<div>
+		<table style="width: 100%;">
+			{foreach $fleets as $index => $fleet}
+			<tr>
+				<td id="fleettime_{{ index }}" class="fleets" data-fleet-end-time="{{ fleet.returntime }}" data-fleet-time="{{ fleet.resttime }}">{pretty_fly_time({{ fleet.resttime }})}</td>
+				<td colspan="2">{{ fleet.text }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+
+	<div>
+		<div id="contentPlanet" style="background: url({{ dpath }}planeten/{{ planetimage }}.jpg) no-repeat; background-size: cover; margin-top: 10px;">
+
+			<div id="namePlanet">
+				<a href="#" onclick="return Dialog.PlanetAction();" title="{{ LNG.ov_planetmenu }}">{$LNG["type_planet_{{ planet_type }}"]} "<span class="planetname">{{ planetname }}</span>"</a>
+			</div>
+
+			{if $planet_type == 1}
+			<div id="lunePlanet">
+				{% if Moon %}<a href="game.php?page=overview&amp;cp={{ Moon.id }}&amp;re=0" title="{{ Moon.name }}"><i class="fas fa-moon"></i> {{ Moon.name }} ({{ LNG.fcm_moon }})</a>{% else %}<i class="far fa-moon"></i> {{ LNG.ov_create_moon }}{% endif %}
+			</div>
+			{% endif %}
+
+			<div id="listDetailPlanet">
+				<table>
+					<tbody>
+						<tr>
+							<td class="desc">{{ LNG.ov_diameter }}</td>
+							<td class="data">{{ planet_diameter }} {{ LNG.ov_distance_unit }} (<a title="{{ LNG.ov_developed_fields }}">{{ planet_field_current }}</a> / <a title="{{ LNG.ov_max_developed_fields }}">{{ planet_field_max }}</a> {{ LNG.ov_fields }})</td>
+						</tr>
+						<tr>
+							<td class="desc">{{ LNG.ov_temperature }}</td>
+							<td class="data">{{ LNG.ov_aprox }} {{ planet_temp_min }}{{ LNG.ov_temp_unit }} {{ LNG.ov_to }} {{ planet_temp_max }}{{ LNG.ov_temp_unit }}</td>
+						</tr>
+						<tr>
+							<td class="desc">{{ LNG.ov_position }}</td>
+							<td class="data"><a href="game.php?page=galaxy&amp;galaxy={{ galaxy }}&amp;system={{ system }}">[{{ galaxy }}:{{ system }}:{{ planet }}]</a></td>
+						</tr>
+						<tr>
+							<td class="desc">{{ LNG.ov_points }}</td>
+							<td class="data">{{ rankInfo }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+
+		<div>
+			<div class="listBat">
+				<div class="title">{{ LNG.ov_list_title_build }}</div>
+				<i class="fas fa-hashtag"></i> {% if buildInfo.buildings %}{$LNG.tech[$buildInfo.buildings['id']]} <span class="level">({$buildInfo.buildings['level']})</span><br><div class="timer" data-time="{$buildInfo.buildings['timeleft']}">{$buildInfo.buildings['starttime']}</div>{% else %}{{ LNG.ov_free }}{% endif %}
+			</div>
+			<div class="listRech">
+				<div class="title">{{ LNG.ov_list_title_tech }}</div>
+				<i class="fas fa-hashtag"></i> {% if buildInfo.tech %}{$LNG.tech[$buildInfo.tech['id']]} <span class="level">({$buildInfo.tech['level']})</span><br><div class="timer" data-time="{$buildInfo.tech['timeleft']}">{$buildInfo.tech['starttime']}</div>{% else %}{{ LNG.ov_free }}{% endif %}
+			</div>
+			<div class="listFleet">
+				<div class="title">{{ LNG.ov_list_title_fleet }}</div>
+				<i class="fas fa-hashtag"></i> {% if buildInfo.fleet %}{$LNG.tech[$buildInfo.fleet['id']]} <span class="level">({$buildInfo.fleet['level']})</span><br><div class="timer" data-time="{$buildInfo.fleet['timeleft']}">{$buildInfo.fleet['starttime']}</div>{% else %}{{ LNG.ov_free }}{% endif %}
+			</div>
+			<div class="clear"></div>
+		</div>
+
+		{% if is_news %}
+		<div>
+			<div class="title">{{ LNG.ov_news }}</div>
+			<div>{{ news }}</div>
+		</div>
+		{% endif %}
+
+		{% if ref_active %}
+		<div style="margin-top: 10px; text-align: center;">
+			<div class="title">{{ LNG.ov_reflink }}</div>
+			<div><input id="referral" type="text" value="{{ path }}index.php?ref={{ userid }}" readonly="readonly" style="width:450px;" /></div>
+
+			<table style="width: 100%;">
+				{foreach $RefLinks as $RefID => $RefLink}
+				<tr>
+					<td colspan="2"><a href="#" onclick="return Dialog.Playercard({{ RefID }}, '{{ RefLink.username }}');">{{ RefLink.username }}</a></td>
+					<td>{{$RefLink.points|number}} / {$ref_minpoints|number}</td>
+				</tr>
+				{foreachelse}
+				<tr>
+					<td colspan="3">{{ LNG.ov_noreflink }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+		{% endif %}
+	</div>
 </div>
-
-<!-- Rename Planet Modal -->
-<div class="modal fade" id="renameModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="game.php?page=overview" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ LNG.ov_rename_planet }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">{{ LNG.ov_planet_name }}</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ planet.name }}">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ LNG.ov_cancel }}</button>
-                    <button type="submit" class="btn btn-primary" name="action" value="rename">{{ LNG.ov_save }}</button>
-                </div>
-                <input type="hidden" name="token" value="{{ token }}">
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Delete Planet Modal -->
-<div class="modal fade" id="deletePlanetModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="game.php?page=overview" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ LNG.ov_delete_planet }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {% if planet.planet_type == 3 %}
-                    <p>{{ LNG.ov_delete_moon_warning }}</p>
-                    {% else %}
-                    <p>{{ LNG.ov_delete_planet_warning }}</p>
-                    {% endif %}
-                    <div class="mb-3">
-                        <label for="password" class="form-label">{{ LNG.ov_password }}</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ LNG.ov_cancel }}</button>
-                    <button type="submit" class="btn btn-danger" name="action" value="delete">{{ LNG.ov_delete }}</button>
-                </div>
-                <input type="hidden" name="token" value="{{ token }}">
-            </form>
-        </div>
-    </div>
-</div>
-
-{% if planet.planet_type == 1 and planet.id_luna == 0 %}
-<!-- Create Moon Modal -->
-<div class="modal fade" id="createMoonModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="game.php?page=overview" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ LNG.ov_create_moon }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>{{ LNG.ov_create_moon_info }}</p>
-                    <div class="mb-3">
-                        <label for="moonName" class="form-label">{{ LNG.ov_moon_name }}</label>
-                        <input type="text" class="form-control" id="moonName" name="moonName" value="{{ LNG.ov_moon_default_name }}">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ LNG.ov_cancel }}</button>
-                    <button type="submit" class="btn btn-primary" name="action" value="createMoon">{{ LNG.ov_create }}</button>
-                </div>
-                <input type="hidden" name="token" value="{{ token }}">
-            </form>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<script>
-// Server time update
-function updateServerTime() {
-    const serverTimeElement = document.getElementById('serverTime');
-    if (!serverTimeElement) return;
-    
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
-    
-    serverTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
-}
-
-// Update progress bars for building/research/shipyard
-function updateProgressBars() {
-    const progressElements = document.querySelectorAll('[data-end-time]');
-    
-    progressElements.forEach(element => {
-        const endTime = parseInt(element.getAttribute('data-end-time'));
-        const now = Math.floor(Date.now() / 1000);
-        
-        if (endTime > now) {
-            const totalTime = endTime - now;
-            const hours = Math.floor(totalTime / 3600);
-            const minutes = Math.floor((totalTime % 3600) / 60);
-            const seconds = totalTime % 60;
-            
-            element.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        } else {
-            element.textContent = "{{ LNG.ov_complete }}";
-            element.style.width = "100%";
-            
-            // Refresh page when a timer completes
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        }
-    });
-}
-
-// Fleet timers
-function updateFleetTimers() {
-    const fleetTimers = document.querySelectorAll('.fleet-timer');
-    
-    fleetTimers.forEach(timer => {
-        const fleetTime = parseInt(timer.getAttribute('data-fleet-time'));
-        const fleetId = timer.getAttribute('data-fleet-id');
-        const now = Math.floor(Date.now() / 1000);
-        
-        if (fleetTime > now) {
-            const totalTime = fleetTime - now;
-            const hours = Math.floor(totalTime / 3600);
-            const minutes = Math.floor((totalTime % 3600) / 60);
-            const seconds = totalTime % 60;
-            
-            timer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        } else {
-            timer.textContent = "{{ LNG.ov_fleet_arrived }}";
-            
-            // Refresh page when a fleet arrives
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        }
-    });
-}
-
-// Run timers
-document.addEventListener('DOMContentLoaded', function() {
-    updateServerTime();
-    updateProgressBars();
-    updateFleetTimers();
-    
-    setInterval(updateServerTime, 1000);
-    setInterval(updateProgressBars, 1000);
-    setInterval(updateFleetTimers, 1000);
-});
-</script>
-{% endblock %}
-{% block content %}
-<div class="container page-overview">
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>{{ LNG.ov_planet_details }}</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-5 text-center">
-                            <img src="{{ dpath }}planeten/{{ PLANET_IMAGE }}.jpg" alt="{{ PLANET_NAME }}" class="img-fluid mb-3">
-                            <div class="d-grid">
-                                <a href="game.php?page=overview&amp;mode=rename" class="btn btn-primary btn-sm">{{ LNG.ov_rename_planet }}</a>
-                                {% if PLANET_DESTROYED_TIME == 0 %}
-                                <a href="game.php?page=overview&amp;mode=destroy" class="btn btn-danger btn-sm mt-2">{{ LNG.ov_delete_planet }}</a>
-                                {% else %}
-                                <a href="game.php?page=overview&amp;mode=undestroy" class="btn btn-warning btn-sm mt-2">{{ LNG.ov_undo_destroy }} ({{ PLANET_DESTROYED_TIME|time }})</a>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-7">
-                            <table class="table table-sm table-hover">
-                                <tbody>
-                                    <tr>
-                                        <td>{{ LNG.ov_name }}:</td>
-                                        <td>{{ PLANET_NAME }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_planet_diameter }}:</td>
-                                        <td>{{ PLANET_DIAMETER }} km</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_planet_fields }}:</td>
-                                        <td>{{ PLANET_FIELD_CURRENT }} / {{ PLANET_FIELD_MAX }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_planet_temperature }}:</td>
-                                        <td>{{ LNG.ov_temp_from }} {{ PLANET_TEMP_MIN }}°C {{ LNG.ov_temp_to }} {{ PLANET_TEMP_MAX }}°C</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_position }}:</td>
-                                        <td>[{{ PLANET_GALAXY }}:{{ PLANET_SYSTEM }}:{{ PLANET_PLANET }}]</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_points }}:</td>
-                                        <td>{{ TOTAL_POINTS }} ({{ RANKS }})</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            {% if PLANET_MOON_ID > 0 %}
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>{{ LNG.ov_moon }}</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-5 text-center">
-                            <img src="{{ dpath }}planeten/mond.jpg" alt="{{ MOON_NAME }}" class="img-fluid mb-3">
-                            <div class="d-grid">
-                                <a href="game.php?page=overview&amp;cp={{ PLANET_MOON_ID }}" class="btn btn-primary btn-sm">{{ LNG.ov_to_the_moon }}</a>
-                            </div>
-                        </div>
-                        <div class="col-md-7">
-                            <table class="table table-sm table-hover">
-                                <tbody>
-                                    <tr>
-                                        <td>{{ LNG.ov_name }}:</td>
-                                        <td>{{ MOON_NAME }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_planet_diameter }}:</td>
-                                        <td>{{ MOON_DIAMETER }} km</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_planet_fields }}:</td>
-                                        <td>{{ MOON_FIELD_CURRENT }} / {{ MOON_FIELD_MAX }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ LNG.ov_position }}:</td>
-                                        <td>[{{ PLANET_GALAXY }}:{{ PLANET_SYSTEM }}:{{ PLANET_PLANET }}]</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            
-            {% if is_news %}
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>{{ LNG.ov_news }}</h5>
-                </div>
-                <div class="card-body">
-                    {{ news|raw }}
-                </div>
-            </div>
-            {% endif %}
-        </div>
-        
-        <div class="col-lg-4">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>{{ LNG.ov_events }}</h5>
-                </div>
-                <div class="card-body">
-                    {% if fleets %}
-                    <table class="table table-sm">
-                        {% for fleetID, fleet in fleets %}
-                        <tr>
-                            <td class="text-{{ fleet.cssClass }}">
-                                {{ fleet.text|raw }}
-                                <br>
-                                <span class="fleet-time" data-fleet-end-time="{{ fleet.returntime }}" data-fleet-time-left="{{ fleet.resttime }}">{{ fleet.resttime|time }}</span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                    {% else %}
-                    <p class="text-center">{{ LNG.ov_no_fleet }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>{{ LNG.ov_building }}</h5>
-                </div>
-                <div class="card-body">
-                    {% if buildInfo %}
-                    <div class="text-center">
-                        <p><strong>{{ buildInfo.name }}</strong> ({{ LNG.ov_level }} {{ buildInfo.level }})</p>
-                        <div class="progress mb-2">
-                            <div class="progress-bar" role="progressbar" style="width: {{ buildInfo.percent }}%;" aria-valuenow="{{ buildInfo.percent }}" aria-valuemin="0" aria-valuemax="100">{{ buildInfo.percent }}%</div>
-                        </div>
-                        <p class="countdown" data-time="{{ buildInfo.endtime }}">{{ buildInfo.endtime|time }}</p>
-                    </div>
-                    {% else %}
-                    <p class="text-center">{{ LNG.ov_free }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>{{ LNG.ov_production }}</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm">
-                        <tr>
-                            <td>{{ LNG.tech.901 }}:</td>
-                            <td class="text-end">{{ METAL_PERHOUR }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ LNG.tech.902 }}:</td>
-                            <td class="text-end">{{ CRYSTAL_PERHOUR }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ LNG.tech.903 }}:</td>
-                            <td class="text-end">{{ DEUTERIUM_PERHOUR }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ LNG.tech.911 }}:</td>
-                            <td class="text-end">{{ ENERGY_PERHOUR }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+{/block}
+{block name="script" append}
+    <script src="scripts/game/overview.js"></script>
+{/block}

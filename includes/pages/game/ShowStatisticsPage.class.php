@@ -177,6 +177,6 @@ class ShowStatisticsPage extends AbstractGamePage
             'stat_date'				=> _date($LNG['php_tdformat'], Cronjob::getLastExecutionTime('statistic'), $USER['timezone']),
         ));
 
-        $this->display('page.statistics.default.tpl');
+        $this->display('page.statistics.default.twig');
     }
 }

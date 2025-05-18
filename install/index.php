@@ -125,7 +125,7 @@ switch ($mode) {
 			'header'        => $LNG['menu_upgrade']
 		));
 
-		$template->show('ins_update.tpl');
+		$template->show('ins_update.twig');
 		break;
 	case 'doupgrade':
 		// TODO:Need a rewrite!
@@ -243,7 +243,7 @@ switch ($mode) {
 			'revision' => $revision,
 			'header'   => $LNG['menu_upgrade'],
         ));
-		$template->show('ins_doupdate.tpl');
+		$template->show('ins_doupdate.twig');
         unlink($enableInstallToolFile);
 		break;
 	case 'install':
@@ -260,7 +260,7 @@ switch ($mode) {
                         ));
 					}
 				}
-				$template->show('ins_license.tpl');
+				$template->show('ins_license.twig');
 				break;
 			case 2:
 				$error = false;
@@ -369,7 +369,7 @@ switch ($mode) {
 					'ftp'    => $ftp,
 					'iniset' => $iniset,
 					'global' => $global));
-				$template->show('ins_req.tpl');
+				$template->show('ins_req.twig');
 				break;
 			case 3:
                 $template->assign(array(
@@ -378,7 +378,7 @@ switch ($mode) {
                     'password' => getenv('DB_PASSWORD'),
                     'dbname'   => getenv('DB_NAME'),
                 ));
-				$template->show('ins_form.tpl');
+				$template->show('ins_form.twig');
 				break;
 			case 4:
 				$host   = HTTP::_GP('host', '');
@@ -397,35 +397,35 @@ switch ($mode) {
 					$template->assign(array(
 						'class'   => 'fatalerror',
 						'message' => $LNG['step2_db_no_dbname'],));
-					$template->show('ins_step4.tpl');
+					$template->show('ins_step4.twig');
 					exit;
 				}
 				if (strlen($prefix) > 36) {
 					$template->assign(array(
 						'class'   => 'fatalerror',
 						'message' => $LNG['step2_db_too_long'],));
-					$template->show('ins_step4.tpl');
+					$template->show('ins_step4.twig');
 					exit;
 				}
 				if (strspn($prefix, '-./\\') !== 0) {
 					$template->assign(array(
 						'class'   => 'fatalerror',
 						'message' => $LNG['step2_prefix_invalid'],));
-					$template->show('ins_step4.tpl');
+					$template->show('ins_step4.twig');
 					exit;
 				}
 				if (preg_match('!^[0-9]!', $prefix) !== 0) {
 					$template->assign(array(
 						'class'   => 'fatalerror',
 						'message' => $LNG['step2_prefix_invalid'],));
-					$template->show('ins_step4.tpl');
+					$template->show('ins_step4.twig');
 					exit;
 				}
 				if (is_file(ROOT_PATH . "includes/config.php") && filesize(ROOT_PATH . "includes/config.php") != 0) {
 					$template->assign(array(
 						'class'   => 'fatalerror',
 						'message' => $LNG['step2_config_exists'],));
-					$template->show('ins_step4.tpl');
+					$template->show('ins_step4.twig');
 					exit;
 				}
 				@touch(ROOT_PATH . "includes/config.php");
@@ -433,7 +433,7 @@ switch ($mode) {
 					$template->assign(array(
 						'class'   => 'fatalerror',
 						'message' => $LNG['step2_conf_op_fail'],));
-					$template->show('ins_step4.tpl');
+					$template->show('ins_step4.twig');
 					exit;
 				}
 				$database                 = array();
@@ -452,7 +452,7 @@ switch ($mode) {
 					$template->assign(array(
 						'class'   => 'fatalerror',
 						'message' => $LNG['step2_db_con_fail'] . '</p><p>' . $e->getMessage(),));
-					$template->show('ins_step4.tpl');
+					$template->show('ins_step4.twig');
 
 					unlink(ROOT_PATH . 'includes/config.php');
 					exit;
@@ -461,11 +461,11 @@ switch ($mode) {
 				$template->assign(array(
 					'class'   => 'noerror',
 					'message' => $LNG['step2_db_done'],));
-				$template->show('ins_step4.tpl');
+				$template->show('ins_step4.twig');
 				exit;
 				break;
 			case 5:
-				$template->show('ins_step5.tpl');
+				$template->show('ins_step5.twig');
 				break;
 			case 6:
 				$db = Database::get();
@@ -526,7 +526,7 @@ switch ($mode) {
 						'class'   => 'fatalerror',
 						'message' => $LNG['step3_db_error'] . '</p><p>' . $error,
 					));
-					$template->show('ins_step4.tpl');
+					$template->show('ins_step4.twig');
 					exit;
 				}
 				break;
@@ -536,7 +536,7 @@ switch ($mode) {
                     'password' => getenv('ADMIN_PASSWORD'),
                     'mail'     => getenv('ADMIN_MAIL'),
                 ));
-				$template->show('ins_acc.tpl');
+				$template->show('ins_acc.twig');
 				break;
 			case 8:
 				$username	= HTTP::_GP('username', '', UTF8_SUPPORT);
@@ -554,7 +554,7 @@ switch ($mode) {
 						'username'	=> $username,
 						'mail'		=> $mail,
 					));
-					$template->show('ins_step8error.tpl');
+					$template->show('ins_step8error.twig');
 					exit;
 				}
 
@@ -565,7 +565,7 @@ switch ($mode) {
 				$session->adminAccess	= 1;
 
 				@unlink($enableInstallToolFile);
-				$template->show('ins_step8.tpl');
+				$template->show('ins_step8.twig');
 				break;
 		}
 		break;
@@ -574,6 +574,6 @@ switch ($mode) {
 			'intro_text'    => $LNG['intro_text'],
 			'intro_welcome' => $LNG['intro_welcome'],
 			'intro_install' => $LNG['intro_install'],));
-		$template->show('ins_intro.tpl');
+		$template->show('ins_intro.twig');
 		break;
 }
