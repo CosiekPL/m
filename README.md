@@ -21,15 +21,9 @@ Projekt został zaktualizowany do:
 1. Sklonuj repozytorium
 2. Uruchom `composer install` aby zainstalować zależności
 3. Skonfiguruj swój serwer WWW
-4. Uruchom `php includes/ConvertSmartyToTwig.php` aby przekonwertować pozostałe szablony
-5. Następuj instrukcjami instalacji w przeglądarce
+4. Następuj instrukcjami instalacji w przeglądarce
 
-## Automatyczna konwersja szablonów
-Do projektu dodano skrypt `includes/ConvertSmartyToTwig.php`, który automatycznie konwertuje szablony Smarty (.tpl) na Twig (.twig). 
-Aby go użyć, wykonaj w konsoli:
 
-```bash
-php includes/ConvertSmartyToTwig.php
 # 2Moons Game Engine
 
 ## Informacje o aktualizacji do PHP 8.4 i Twig
