@@ -9,24 +9,8 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {},
-    "require-dev": {}
-}
-{
-    "name": "jkroepke/2moons",
-    "description": "2Moons is a free browser game engine",
-    "type": "project",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Jan Kröpke",
-            "email": "info@2moons.cc"
-        }
-    ],
-    "minimum-stability": "stable",
     "require": {
         "php": ">=8.4.0",
-        "smarty/smarty": "^4.3",
         "twig/twig": "^3.7",
         "ext-pdo": "*",
         "ext-mbstring": "*",
